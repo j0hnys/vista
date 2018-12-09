@@ -42,7 +42,7 @@ class GenerateCrud extends Command
             // $controllerCrud->save();
 
 
-            $this->info($name.' RESTFUL CRUD successfully created');
+            $this->info($name.' CRUD successfully created');
             
         } catch (\Exception $ex) {
             $this->error($ex->getMessage() . ' on line ' . $ex->getLine() . ' in ' . $ex->getFile());

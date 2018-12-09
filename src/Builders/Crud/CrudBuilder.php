@@ -15,20 +15,33 @@ class CrudBuilder
         
         // $name = 'Spa';
 
-        // //
-        // //controller generation
-        // $controller_path = base_path().'/app/Http/Controllers/'.ucfirst(strtolower($name)).'Controller.php';
+        //
+        //list generation
+        $list_path = base_path().'/resources/js/pages/'.strtolower($name).'_list.vue';
         
-        // if (!file_exists($controller_path)) {
-        //     $this->makeDirectory($controller_path);
+        if (!file_exists($list_path)) {
 
-        //     $stub = file_get_contents(__DIR__.'/../../Stubs/Crud/Controller.stub');
+            $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/pages/list.vue.stub');
 
-        //     $stub = str_replace('{{td_entity}}', strtolower($name), $stub);
-        //     $stub = str_replace('{{Td_entity}}', ucfirst(strtolower($name)), $stub);
+            $stub = str_replace('{{vst_entity}}', strtolower($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst(strtolower($name)), $stub);
             
-        //     file_put_contents($controller_path, $stub);
-        // }
+            file_put_contents($list_path, $stub);
+        }
+
+        //
+        //form generation
+        $form_path = base_path().'/resources/js/pages/'.strtolower($name).'_form.vue';
+        
+        if (!file_exists($form_path)) {
+
+            $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/pages/form.vue.stub');
+
+            $stub = str_replace('{{vst_entity}}', strtolower($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst(strtolower($name)), $stub);
+            
+            file_put_contents($form_path, $stub);
+        }
 
 
         // //
