@@ -1,0 +1,21 @@
+{
+    "name": "j0hnys/vista",
+    "description": "laravel UI generator using iview, vue",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "John Stamkos",
+            "email": "tzonyss@gmail.com"
+        }
+    ],
+    "require": {},
+    "minimum-stability": "alpha",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "j0hnys\\Vista\\VistaServiceProvider"
+            ]
+        }
+    }
+}

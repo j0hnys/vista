@@ -1,0 +1,68 @@
+1. prosthhkh toy 
+    ```
+    "dependencies": {
+        "iview": "^3.0.0",
+		"iview-loader": "*",
+        "vue": "^2.5.16",
+		"vuex": "^3.0.1",
+        "vue-router": "^2.8.1"
+    }
+    ```
+    sto package.json ths laravel
+
+2. prepei na kanw ena route `Route::get('/{any}', 'SpaController@index')->where('any', '.*');`
+    - kai enan controller "SpaController"
+    ```
+    <?php
+
+    namespace App\Http\Controllers;
+
+    use Illuminate\Http\Request;
+
+    class SpaController extends Controller
+    {
+        public function index()
+        {
+            return view('iview');
+        }
+    }
+    ```
+
+3. PROSOXH STA PATHS STO SPA!!! prepei na valw "/vista-framework/public/" anti gia "/" twra poy eimai sto development
+    - profanws to iview spa einai san diaforetiko app epomenws to root url einai to sketo "/" oxi ayto poy thewrei h laravel
+        ws root (to "/vista-framework/public/")
+
+~ gia na kanw ena local package prepei na exw
+    - gia to kentriko composer.json
+        - "*/*": "dev-master" sto require
+        - to parakatw sto "repositories"
+        ```
+        "repositories": [
+            {
+                "type": "path",
+                "url": "packages/*/*",
+                "options": {
+                    "symlink": true
+                }
+            }
+        ],
+        ```
+        - to parakatw sto "autoload" -> "psr-4"
+        ```
+        "autoload": {
+            "psr-4": {
+                "App\\": "app/",
+                "*\\*\\": "packages/*/*"
+            },
+        },
+        ```
+    - gia to composer.json toy package
+        ```
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "*\\*\\*ServiceProvider"
+                ]
+            }
+        }
+        ```
