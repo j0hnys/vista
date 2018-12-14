@@ -26,8 +26,6 @@
         
         <link rel="stylesheet" href="https://unpkg.com/iview@3.0.1/dist/styles/iview.css">
         
-        <!-- <script src="{{ mix('js/app.js') }}"></script> -->
-
         <script src="./js/app.js"></script>
         <link href="./css/app.css" rel="stylesheet" type="text/css">
     </body>
