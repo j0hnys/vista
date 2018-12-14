@@ -66,3 +66,5 @@
             }
         }
         ```
+	
+gia na exw t process.env.MIX_BASE_RELATIVE_URL prepei na valw to `MIX_BASE_RELATIVE_URL=/demo_omp_john/public` sto `.env` ths laravel
