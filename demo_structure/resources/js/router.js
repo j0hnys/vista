@@ -6,14 +6,14 @@ import test_form_sub_menu from './navigation/sub_menus/test_form_sub_menu.js';
 
 const routers = [
     {
-        path: '/vista-framework/public/',
+        path: process.env.MIX_BASE_RELATIVE_URL+'/',
         meta: {
             title: 'otinanai'
         },
         component: index
     },
     {
-        path: '/vista-framework/public/test_form',
+        path: process.env.MIX_BASE_RELATIVE_URL+'/test_form',
         meta: {
             title: 'otinanai'
         },
@@ -23,7 +23,7 @@ const routers = [
         }
     },
     {
-        path: '/vista-framework/public/test_list',
+        path: process.env.MIX_BASE_RELATIVE_URL+'/test_list',
         meta: {
             title: 'otinanai'
         },
