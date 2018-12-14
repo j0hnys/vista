@@ -11,6 +11,11 @@
     ],
     "require": {},
     "minimum-stability": "alpha",
+    "autoload": {
+        "psr-4": {
+            "j0hnys\\Vista\\": "./"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
