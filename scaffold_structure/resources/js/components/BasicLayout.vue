@@ -53,17 +53,17 @@
                 <Menu ref="main_menu" @on-select="on_main_menu_item_clicked" active-name="1" theme="dark" width="auto" :class="menuitemClasses">
                     <MenuItem v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
                         <Icon :type="menu_item.icon_type"></Icon>
-                        <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed">{{menu_item.text}}</span></router-link>
+                        <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white'}">{{menu_item.text}}</span></router-link>
                     </MenuItem>
 
                     <Submenu v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
                         <template slot="title">
                             <Icon :type="menu_item.icon_type"></Icon>
-                            <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed">{{menu_item.text}}</span></router-link>
+                            <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'grey'}">{{menu_item.text}}</span></router-link>
                         </template>
                         <MenuGroup v-for="submenu_group in menu_item.children" v-bind:data="submenu_group" v-bind:key="submenu_group.name" :title="submenu_group.text">
                             <MenuItem v-for="submenu_group_item in submenu_group.children" v-bind:data="submenu_group_item" v-bind:key="submenu_group_item.name" :name="submenu_group_item.name">
-                                <router-link :to="submenu_group_item.redirect_url"><span v-if="!isCollapsed">{{submenu_group_item.text}}</span></router-link>
+                                <router-link :to="submenu_group_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white'}">{{submenu_group_item.text}}</span></router-link>
                             </MenuItem>
                         </MenuGroup>
                     </Submenu>

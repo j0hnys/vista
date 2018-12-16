@@ -10,17 +10,22 @@ class Install
      * 
      * @return void
      */
-    public function __construct()
+    public function __construct(string $resources_relative_path_name_ = '')
     {
         
         $app_path = base_path().'/app';
 
+        $resources_relative_path_name = 'resources';
+        if (!empty($resources_relative_path_name_)) {
+            $resources_relative_path_name = $resources_relative_path_name_;
+        }
+
         //
         //folder structure creation
-        if (!file_exists(base_path().'/resources/js/app.js')) {
+        if (!file_exists(base_path().'/'.$resources_relative_path_name.'/js/app.js')) {
             
             $source = __DIR__.'/../../../scaffold_structure/resources';
-            $destination = base_path().'/resources';
+            $destination = base_path().'/'.$resources_relative_path_name.'';
             
             $this->copyFoldersAndFiles($source, $destination);
         } else {

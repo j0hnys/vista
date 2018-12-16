@@ -10,10 +10,15 @@ class CrudBuilder
      * @param string $name
      * @throws \Exception
      */
-    public function __construct(string $name = '', string $model_schema_relative_fullpath = '')
+    public function __construct(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
     {
         
         $mustache = new \Mustache_Engine;
+        $resources_relative_path_name = 'resources';
+        if (!empty($resources_relative_path_name_)) {
+            $resources_relative_path_name = $resources_relative_path_name_;
+        }
+		
 
         if (!empty($model_schema_relative_fullpath)) {
             // $model_schema = file_get_contents(base_path().'/app/Models/Schemas/Exports/'.ucfirst(strtolower($name)).'.json');
@@ -31,7 +36,7 @@ class CrudBuilder
 
         //
         //list delete generation
-        $list_delete_path = base_path().'/resources/js/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
         
         if (!file_exists($list_delete_path)) {
             $this->makeDirectory($list_delete_path);
@@ -50,7 +55,7 @@ class CrudBuilder
 
         //
         //create generation
-        $create_path = base_path().'/resources/js/pages/'.strtolower($name).'_create.vue';
+        $create_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
         
         if (!file_exists($create_path)) {
             $this->makeDirectory($create_path);
@@ -70,7 +75,7 @@ class CrudBuilder
 
         //
         //update generation
-        $update_path = base_path().'/resources/js/pages/'.strtolower($name).'_update.vue';
+        $update_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
         
         if (!file_exists($update_path)) {
             $this->makeDirectory($update_path);
@@ -91,7 +96,7 @@ class CrudBuilder
 
         //
         //update router
-        $router_path = base_path().'/resources/js/router.js';
+        $router_path = base_path().'/'.$resources_relative_path_name.'/js/router.js';
         
         $lines = file($router_path); 
         $last = sizeof($lines) - 1; 

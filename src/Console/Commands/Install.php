@@ -13,7 +13,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = "vista:install";
+    protected $signature = "vista:install {resources_relative_path_name?}";
 
     /**
      * The console command description.
@@ -30,9 +30,9 @@ class Install extends Command
     public function handle()
     {
         try {
-           
+            $resources_relative_path_name = $this->argument('resources_relative_path_name') ? $this->argument('resources_relative_path_name') : '';
 
-            $install = new Setup\Install();
+            $install = new Setup\Install($resources_relative_path_name);
             
 
             $this->info('Vista installed successfully');
