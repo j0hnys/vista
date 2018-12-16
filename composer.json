@@ -9,7 +9,9 @@
             "email": "tzonyss@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "mustache/mustache": "2.12.0"
+    },
     "minimum-stability": "alpha",
     "autoload": {
         "psr-4": {

@@ -1,4 +1,4 @@
-const test_form_sub_menu = [
+const demo_sub_menu = [
     {
         name: '1',
         icon_type: 'ios-navigate',
@@ -72,4 +72,4 @@ const test_form_sub_menu = [
         ]
     },
 ];
-export default test_form_sub_menu;
+export default demo_sub_menu;

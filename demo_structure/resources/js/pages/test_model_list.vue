@@ -25,7 +25,7 @@
     }
 </style>
 <template>
-    <div class="{{vst_entity}}">
+    <div class="test_model_list">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
 
@@ -50,8 +50,7 @@
         data() {
             //
             //app state registration
-            this.$store.registerModule(['pages','{{Vst_entity}}'], {
-                namespaced: true,
+            this.$store.registerModule('Test_model_list', {
                 state: {
                     menu_item1: 'merge',
                 },
@@ -72,26 +71,12 @@
 
                 columns: [
                     {
-                        title: 'Name',
-                        key: 'name',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Icon', {
-                                    props: {
-                                        type: 'person'
-                                    }
-                                }),
-                                h('strong', params.row.name)
-                            ]);
-                        }
+                        title: 'string_parameter',
+                        key: 'string_parameter'
                     },
                     {
-                        title: 'Age',
-                        key: 'age'
-                    },
-                    {
-                        title: 'Address',
-                        key: 'address'
+                        title: 'integer_parameter',
+                        key: 'integer_parameter'
                     },
                     {
                         title: 'Action',
@@ -99,6 +84,12 @@
                         width: 150,
                         align: 'center',
                         render: (h, params) => {
+                            var row = params.row;
+
+                            // console.log({
+                            //     params: params,
+                            // });
+
                             return h('div', [
                                 h('Button', {
                                     props: {
@@ -111,7 +102,7 @@
                                     on: {
                                         click: () => {
                                             // this.show(params.index)
-                                            this.$router.push({ path: '/vista-framework/public/' });
+                                            this.$router.push({ name: 'test_model_update', params: { id: row.id } });
                                         }
                                     }
                                 }, 'Edit'),
@@ -123,7 +114,11 @@
                                     on: {
                                         click: () => {
                                             // this.remove(params.index)
-                                            this.$router.push({ path: '/vista-framework/public/' });
+                                            // this.$router.push({ name: '/vista-framework/public/' });
+                                            console.log('delete clicked!');
+
+                                            this.ajax().delete(row.id);
+
                                         }
                                     }
                                 }, 'Delete')
@@ -131,35 +126,35 @@
                         }
                     }
                 ],
-                data: [
-                    {
-                        name: 'John Brown',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park'
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'London No. 1 Lake Park'
-                    },
-                    {
-                        name: 'Joe Black',
-                        age: 30,
-                        address: 'Sydney No. 1 Lake Park'
-                    },
-                    {
-                        name: 'Jon Snow',
-                        age: 26,
-                        address: 'Ottawa No. 2 Lake Park'
-                    }
-                ]
+                data: []
 
 
             };
         },
         methods: {
+            ajax() {
+                var self = this;
+                return {
+                    get() {
+                        window.axios.get( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/test_model' ).then(({ data }) => {
+                            // console.log(data);
+                            self.data = data;
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    },
+                    delete(id) {
+                        window.axios.delete( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/test_model/'+id ).then(({ data }) => {
+                            // console.log(data);
+                            window.location.reload();
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    }
+                }
+            },
             on_create_button_clicked() {
-                this.$router.push({ path: '/vista-framework/public/' });
+                this.$router.push({ name: 'test_model_create' });
             },
             handleStart () {
                 this.$Modal.info({
@@ -180,6 +175,9 @@
             //     // 'this.$store.state.Index': this.$store.state.Index,
             //     'this.$route': this.$route,
             // });
+
+            this.ajax().get();
+
         },
     }
 </script>

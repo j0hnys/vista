@@ -12,7 +12,7 @@ class GenerateCrud extends Command
      *
      * @var string
      */
-    protected $signature = "vista:generate:crud {name} {model?} {--only=} {--api} {--parent=} ";
+    protected $signature = "vista:generate:crud {name} {schema_path?} {model?} {--only=} {--api} {--parent=} ";
 
     /**
      * The console command description.
@@ -29,8 +29,9 @@ class GenerateCrud extends Command
     public function handle()
     {
         try {
-            $model = $this->argument('model');
             $name = $this->argument('name');
+            $schema_path = $this->argument('schema_path') ? $this->argument('schema_path') : '';
+            $model = $this->argument('model');
             $only = $this->option('only');
             $api = $this->option('api');
             $withArr = !empty($with) ? explode(",", $with) : [];
@@ -38,7 +39,7 @@ class GenerateCrud extends Command
             $parent = $this->option('parent');
            
 
-            $crud = new Crud\CrudBuilder($name);
+            $crud = new Crud\CrudBuilder($name, $schema_path);
             // $controllerCrud->save();
 
 

@@ -32,7 +32,7 @@
                     test
                 </h1>
 
-                <router-link to="/vista-framework/public/test_form">test_form</router-link>
+                <router-link to="/">Home</router-link>
 
                 <h2>
                     <p>Welcome to your iView app!</p>
@@ -47,7 +47,8 @@
         data() {
             //
             //app state registration
-            this.$store.registerModule('Index', {
+            this.$store.registerModule(['pages','Index'], {
+                namespaced: true,
                 state: {
                     menu_item1: 'merge',
                 },

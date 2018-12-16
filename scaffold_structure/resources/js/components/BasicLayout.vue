@@ -49,21 +49,21 @@
     <div class="layout">
         <Layout :style="{minHeight: '100vh'}">
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
-                <h1 :style="{color: 'white', position: 'relative', top: '5px', left: '20px'}">Vista</h1>
-                <Menu active-name="1-2" theme="dark" width="auto" :class="menuitemClasses">
+                <h1 :style="{color: 'white', position: 'relative', top: '5px', left: '28px'}">{{menu_logo}}</h1>
+                <Menu ref="main_menu" @on-select="on_main_menu_item_clicked" active-name="1" theme="dark" width="auto" :class="menuitemClasses">
                     <MenuItem v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
                         <Icon :type="menu_item.icon_type"></Icon>
-                        <router-link :to="menu_item.redirect_url">{{menu_item.text}}</router-link>
+                        <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed">{{menu_item.text}}</span></router-link>
                     </MenuItem>
 
                     <Submenu v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
                         <template slot="title">
                             <Icon :type="menu_item.icon_type"></Icon>
-                            <router-link :to="menu_item.redirect_url">{{menu_item.text}}</router-link>
+                            <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed">{{menu_item.text}}</span></router-link>
                         </template>
                         <MenuGroup v-for="submenu_group in menu_item.children" v-bind:data="submenu_group" v-bind:key="submenu_group.name" :title="submenu_group.text">
                             <MenuItem v-for="submenu_group_item in submenu_group.children" v-bind:data="submenu_group_item" v-bind:key="submenu_group_item.name" :name="submenu_group_item.name">
-                                <router-link :to="submenu_group_item.redirect_url">{{submenu_group_item.text}}</router-link>
+                                <router-link :to="submenu_group_item.redirect_url"><span v-if="!isCollapsed">{{submenu_group_item.text}}</span></router-link>
                             </MenuItem>
                         </MenuGroup>
                     </Submenu>
@@ -71,12 +71,41 @@
                 </Menu>
             </Sider>
             <Layout>
-                <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)'}">Page Title</Header>
+                <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)', padding: '0px 10px'}">
+                    <Row> 
+                        <Col :xs="21" :sm="21" :md="22" :lg="22">
+                            <span :style="{'font-size': '2em'}">Page Title</span>
+                        </Col>
+                        <Col :xs="3" :sm="3" :md="2" :lg="2">
+                            <Col span="12">
+                                <Poptip
+                                    confirm
+                                    title="Want to see all notifications?"
+                                    ok-text="yes"
+                                    cancel-text="no">
+                                    <Badge :count="1" :offset="[15,0]">
+                                        <Icon type="ios-notifications-outline" size="26"></Icon>
+                                    </Badge>
+                                </Poptip>
+                            </Col>
+                            <Col span="12">
+                                <Dropdown>
+                                    <Avatar icon="ios-person" size="large" />
+                                    <DropdownMenu slot="list">
+                                        <DropdownItem>Account</DropdownItem>
+                                        <DropdownItem>Settings</DropdownItem>
+                                        <DropdownItem>Logout</DropdownItem>
+                                    </DropdownMenu>
+                                </Dropdown>
+                            </Col>
+                        </Col>
+                    </Row>
+                </Header>
                 <Content :style="{padding: '0 16px 16px'}">
                     <Breadcrumb :style="{margin: '16px 0'}">
                         <BreadcrumbItem v-for="breadcrumb in this.$store.state.BasicLayout.breadcrumbs" v-bind:data="breadcrumb" v-bind:key="breadcrumb.text">{{breadcrumb.text}}</BreadcrumbItem>
                     </Breadcrumb>
-                    <Menu mode="horizontal" theme="light" active-name="1" v-if="submenu">
+                    <Menu ref="sub_menu" @on-select="on_sub_menu_item_clicked" mode="horizontal" theme="light" active-name="1" v-if="submenu">
 
                         <MenuItem v-for="menu_item in submenu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
                             <Icon :type="menu_item.icon_type"></Icon>
@@ -113,22 +142,13 @@
             //
             //app state registration
             this.$store.registerModule('BasicLayout', {
+                namespaced: true,
                 state: {
-                    breadcrumbs: [
-                        {
-                            text: 'Home',
-                        },
-                        {
-                            text: 'Components',
-                        },
-                        {
-                            text: 'Layout',
-                        },
-                    ],
+                    breadcrumbs: [],
                 },
                 mutations: {    //must be synchronous!! ta "actions" einai workflows praktika!!
-                    set_menu (state, name) {
-                        state.menu_item = name;
+                    set_breadcrumbs (state, data) {
+                        state.breadcrumbs = data;
                     },
                 },
             });
@@ -138,6 +158,15 @@
             return {
                 isCollapsed: false,
                 submenu: this.$route.meta.submenu,
+
+                app_title: {
+                    visible: 'Vista',
+                    collapsed_menu: 'V',
+                    expanded_menu: 'Vista',
+                },
+
+                main_menu_breadcrumb: [],
+                sub_menu_breadcrumb: [],
             };
         },
         computed: {
@@ -146,7 +175,59 @@
                     'menu-item',
                     this.isCollapsed ? 'collapsed-menu' : ''
                 ]
-            }
+            },
+            menu_logo() {
+                if (this.isCollapsed) {
+                    return this.app_title.collapsed_menu;
+                }
+                return this.app_title.expanded_menu;
+            },
+        },
+        methods: {
+            on_main_menu_item_clicked(menu_name) {
+                console.log('on_main_menu_item_clicked');
+                console.log({
+                    menu_name: menu_name,
+                });
+
+                var indexes = menu_name.split('-');
+
+                var main_menu = this.$store.state.navigation.main_menu;
+                var current_menu_level = main_menu;
+
+                this.main_menu_breadcrumb = [];
+                for (const i in indexes) {
+                    this.main_menu_breadcrumb.push({
+                        text: current_menu_level[ indexes[i]-1 ].text,
+                    });
+                    current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                }
+
+                this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb);
+
+            },
+            on_sub_menu_item_clicked(menu_name) {
+                console.log('on_sub_menu_item_clicked');
+                console.log({
+                    menu_name: menu_name,
+                });
+
+                var indexes = menu_name.split('-');
+                // indexes.shift();    //<-- to remove "sub"
+                var sub_menu = this.submenu;
+                var current_menu_level = sub_menu;
+
+                this.sub_menu_breadcrumb = [];
+                for (const i in indexes) {
+                    this.sub_menu_breadcrumb.push({
+                        text: current_menu_level[ indexes[i]-1 ].text,
+                    });
+                    current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                }
+
+                this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb.concat(this.sub_menu_breadcrumb));
+
+            },
         },
         mounted() {
             // console.log('basic layout mounted');
@@ -154,6 +235,13 @@
             //     'this': this,
             //     'this.$store.state.BasicLayout.menu_items': this.$store.state.BasicLayout.menu_items,
             // });
+
+            this.$store.commit('BasicLayout/set_breadcrumbs',[
+                {
+                    text: this.$store.state.navigation.main_menu[0].text    //<-- einai k t arxiko active...
+                }
+            ]);
+
         },
     }
 </script>

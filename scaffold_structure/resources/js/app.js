@@ -61,17 +61,20 @@ router.afterEach((to, from, next) => {
 
 const store = new Vuex.Store({
     state: {
-        base_url: 'http://51.158.69.132/demo_omp_john/public/',
-        base_relative_url: '/demo_omp_john/public/',
-        storage_url: 'http://51.158.69.132/demo_omp_john/public/storage/app/',
+        base_url: process.env.MIX_BASE_URL+'/',
+        base_relative_url: process.env.MIX_BASE_RELATIVE_URL+'/',
+        storage_url: process.env.MIX_STORAGE_URL+'/',
         navigation: {
             main_menu: MainMenu,
         }
     },
     modules: {
-        //
-        // are register inside every single file component
-        //
+        pages: {
+            namespaced: true,
+            //
+            // page modules are register inside every page single file component
+            //
+        }
     },
     mutations: {    //must be synchronous!! ta "actions" einai workflows praktika!!
         increment (state) {

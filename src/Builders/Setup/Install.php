@@ -19,7 +19,7 @@ class Install
         //folder structure creation
         if (!file_exists(base_path().'/resources/js/app.js')) {
             
-            $source = __DIR__.'/../../../demo_structure/resources';
+            $source = __DIR__.'/../../../scaffold_structure/resources';
             $destination = base_path().'/resources';
             
             $this->copyFoldersAndFiles($source, $destination);

@@ -95,7 +95,8 @@
         data() {
             //
             //app state registration
-            this.$store.registerModule('{{Vst_entity}}', {
+            this.$store.registerModule(['pages','{{Vst_entity}}'], {
+                namespaced: true,
                 state: {
                     menu_item1: 'merge',
                 },
