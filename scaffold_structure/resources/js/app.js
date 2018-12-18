@@ -96,7 +96,7 @@ const store = new Vuex.Store({
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
 
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
-Vue.component('app-layout', require('./components/BasicLayout.vue'));
+Vue.component('app-layout', require('./components/BasicLayout.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
