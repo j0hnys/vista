@@ -108,5 +108,6 @@ const app = new Vue({
     el: '#app',
     components: { App },
     router: router,
-    store
+    store,
+    render: h => h(App)
 });
