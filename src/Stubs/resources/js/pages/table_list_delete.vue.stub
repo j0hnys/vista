@@ -124,8 +124,8 @@
             ajax() {
                 var self = this;
                 return {
-                    get() {
-                        window.axios.get( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/{{vst_entity}}' ).then(({ data }) => {
+                    get(id='') {
+                        window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}'+id ).then(({ data }) => {
                             // console.log(data);
                             self.data = data;
                         }).catch(error => {
@@ -133,7 +133,7 @@
                         });
                     },
                     delete(id) {
-                        window.axios.delete( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/{{vst_entity}}/'+id ).then(({ data }) => {
+                        window.axios.delete( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}/'+id ).then(({ data }) => {
                             // console.log(data);
                             window.location.reload();
                         }).catch(error => {

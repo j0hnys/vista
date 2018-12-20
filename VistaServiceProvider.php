@@ -17,16 +17,10 @@ class VistaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
-        //vvv pio meta ayto...
-        //
-        // $configPath = __DIR__.'/../config/laravel_generator.php';
-        // $this->publishes([
-        //     $configPath => config_path('infyom/laravel_generator.php'),
-        // ]);
-        //
-        //^^^
-        //
+        $configPath = __DIR__.'/config/vista.php';
+        $this->publishes([
+            $configPath => config_path('vista.php'),
+        ]);
     }
 
     /**

@@ -176,15 +176,15 @@
             ajax() {
                 var self = this;
                 return {
-                    get(id) {
-                        window.axios.get( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/{{vst_entity}}/'+id ).then(({ data }) => {
+                    get(id='') {
+                        window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}/'+id ).then(({ data }) => {
                             self.formValidate = data;
                         }).catch(error => {
                             console.log(error);
                         });
                     },
                     update(id,data) {
-                        window.axios.put( process.env.MIX_BASE_RELATIVE_URL+'/trident/resource/{{vst_entity}}/'+id,  data ).then((response) => {
+                        window.axios.put( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}/'+id,  data ).then((response) => {
                             // Once AJAX resolves we can update the Crud with the new color
                             self.$Message.success('Success!');
                         }).catch(error => {
