@@ -1,26 +1,26 @@
     { // add "import {{vst_entity}}_list_delete from './pages/{{vst_entity}}_list_delete.vue';" at the top
-        path: process.env.MIX_BASE_RELATIVE_URL+'/{{vst_entity}}_list',
+        path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_list',
         title: 'otinanai',
         name: '{{vst_entity}}_list_delete',
-        component: {{vst_entity}}_list_delete,
+        component: routes.{{vst_entity}}_list_delete,
         meta: {
             submenu: null,
         }
     },
     { // add "import {{vst_entity}}_create from './pages/{{vst_entity}}_create.vue';" at the top
-        path: process.env.MIX_BASE_RELATIVE_URL+'/{{vst_entity}}_create',
+        path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_create',
         title: 'otinanai',
         name: '{{vst_entity}}_create',
-        component: {{vst_entity}}_create,
+        component: routes.{{vst_entity}}_create,
         meta: {
             submenu: null,
         }
     },
     { // add "import {{vst_entity}}_update from './pages/{{vst_entity}}_update.vue';" at the top
-        path: process.env.MIX_BASE_RELATIVE_URL+'/{{vst_entity}}_update/:id',
+        path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_update/:id',
         title: 'otinanai',
         name: '{{vst_entity}}_update',
-        component: {{vst_entity}}_update,
+        component: routes.{{vst_entity}}_update,
         meta: {
             submenu: null,
         }

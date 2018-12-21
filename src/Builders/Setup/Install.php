@@ -16,21 +16,72 @@ class Install
         $app_path = base_path().'/app';
 
         $resources_relative_path_name = 'resources';
+        $public_relative_path_name = 'public';
         if (!empty($resources_relative_path_name_)) {
             $resources_relative_path_name = $resources_relative_path_name_;
+        }
+
+        $configuration = config('vista');
+        if (empty($configuration)) {
+            throw new \Exception("NO CONFIGURATION FILE FOUND!! execute \"php artisan vendor:publish\"", 1);
+        }
+
+        $MIX_BASE_RELATIVE_URL = 'MIX_BASE_RELATIVE_URL';
+        foreach ($configuration['spas'] as $spa_configuration) {
+            if (!empty($spa_configuration['resource_folder_name'])) {
+                if ($spa_configuration['resource_folder_name'] == $resources_relative_path_name) {
+
+                    //set MIX_BASE_RELATIVE_URL
+                    if (!empty($spa_configuration['mix_base_relative_url_env_name'])) {
+                        $MIX_BASE_RELATIVE_URL = $spa_configuration['mix_base_relative_url_env_name'];
+                    }  else {
+                        throw new \Exception("no \"mix_base_relative_url_env_name\" found in spa", 1);
+                    }
+
+                    //set public_relative_path_name
+                    if (!empty($spa_configuration['public_folder_name'])) {
+                        $public_relative_path_name = $spa_configuration['public_folder_name'];
+                    } else {
+                        throw new \Exception("public_folder_name must be set with resource_folder_name!!", 1);
+                    }
+                }
+            } else {
+                throw new \Exception("no \"resource_folder_name\" found in spa", 1);
+            }
         }
 
         //
         //folder structure creation
         if (!file_exists(base_path().'/'.$resources_relative_path_name.'/js/app.js')) {
             
+            //resources folder 
             $source = __DIR__.'/../../../scaffold_structure/resources';
             $destination = base_path().'/'.$resources_relative_path_name.'';
+            $this->makeDirectory($destination);
             
             $this->copyFoldersAndFiles($source, $destination);
+            
+            //public folder
+            $source = __DIR__.'/../../../scaffold_structure/public';
+            $destination = base_path().'/'.$public_relative_path_name.'';
+            $this->makeDirectory($destination);
+
+            $this->copyFoldersAndFiles($source, $destination);
+
         } else {
             throw new \Exception("Already installed!!", 1);
         }
+
+
+        //
+        //write router.js
+        $router_full_path = base_path().'/'.$resources_relative_path_name.'/js/router.js';
+        
+        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/router.js.stub');
+        $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+        
+        file_put_contents($router_full_path, $stub);
+        
         
 
         //
@@ -58,6 +109,19 @@ class Install
 
 
 
+    }
+
+     /**
+     * Build the directory for the class if necessary.
+     *
+     * @param  string $path
+     * @return string
+     */
+    protected function makeDirectory($path)
+    {
+        if (!is_dir(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
     }
     
      /**
@@ -87,15 +151,5 @@ class Install
 
     }
 
-    
-    /**
-     * Get code and save to disk
-     * @return mixed
-     * @throws \Exception
-     */
-    public function save()
-    {
-        //
-    }
 
 }

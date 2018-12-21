@@ -74,7 +74,8 @@
                     {{# table_columns }}
                     {
                         title: '{{parameter_name}}',
-                        key: '{{parameter_name}}'
+                        key: '{{parameter_name}}',
+                        minWidth: 100,
                     },
                     {{/ table_columns }}
                     {

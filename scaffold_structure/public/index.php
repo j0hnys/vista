@@ -50,7 +50,7 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 */
 
 //
-//vista
+//dika moy ayta!!
 $app->bind('path.public', function() {
     return __DIR__;
 });

@@ -37,7 +37,7 @@ class CrudBuilder
             } else {
                 throw new \Exception("no \"resource_folder_name\" found in spa", 1);
             }
-        }        
+        }
 
 
         if (!empty($model_schema_relative_fullpath)) {
@@ -119,6 +119,20 @@ class CrudBuilder
 
 
         //
+        //update routes
+        $routes_path = base_path().'/'.$resources_relative_path_name.'/js/router.pages.js';
+        
+        $lines = file($routes_path); 
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue");');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue");');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue");');
+        
+        $fp = fopen($routes_path, 'w'); 
+        fwrite($fp, implode('', $lines)); 
+        fclose($fp); 
+
+
+        //
         //update router
         $router_path = base_path().'/'.$resources_relative_path_name.'/js/router.js';
         
@@ -177,15 +191,5 @@ class CrudBuilder
         ];
     }
 
-    
-    /**
-     * Get code and save to disk
-     * @return mixed
-     * @throws \Exception
-     */
-    public function save()
-    {
-        //
-    }
 
 }

@@ -50,13 +50,13 @@
         <Layout :style="{minHeight: '100vh'}">
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
                 <h1 :style="{color: 'white', position: 'relative', top: '5px', left: '28px'}">{{menu_logo}}</h1>
-                <Menu ref="main_menu" @on-select="on_main_menu_item_clicked" active-name="1" theme="dark" width="auto" :class="menuitemClasses">
-                    <MenuItem v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
+                <Menu ref="main_menu" @on-select="on_main_menu_item_clicked" :active-name="active_menu_name" theme="dark" width="auto" :class="menuitemClasses">
+                    <MenuItem v-for="menu_item in this.$store.getters['navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
                         <Icon :type="menu_item.icon_type"></Icon>
-                        <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white'}">{{menu_item.text}}</span></router-link>
+                        <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white', width: '80%'}">{{menu_item.text}}</span></router-link>
                     </MenuItem>
 
-                    <Submenu v-for="menu_item in this.$store.state.navigation.main_menu" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
+                    <Submenu v-for="menu_item in this.$store.getters['navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
                         <template slot="title">
                             <Icon :type="menu_item.icon_type"></Icon>
                             <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'grey'}">{{menu_item.text}}</span></router-link>
@@ -74,7 +74,7 @@
                 <Header :style="{background: '#fff', boxShadow: '0 2px 3px 2px rgba(0,0,0,.1)', padding: '0px 10px'}">
                     <Row> 
                         <Col :xs="21" :sm="21" :md="22" :lg="22">
-                            <span :style="{'font-size': '2em'}">Page Title</span>
+                            <span :style="{'font-size': '2em'}">{{page_title}}</span>
                         </Col>
                         <Col :xs="3" :sm="3" :md="2" :lg="2">
                             <Col span="12">
@@ -151,6 +151,12 @@
                         state.breadcrumbs = data;
                     },
                 },
+                getters: {
+                    breadcrumbs: (state) => {
+                        // console.log(data);
+                        return state.breadcrumbs;
+                    }
+                },
             });
 
             //
@@ -158,6 +164,10 @@
             return {
                 isCollapsed: false,
                 submenu: this.$route.meta.submenu,
+
+                page_title: 'Welcome',
+
+                active_menu_name: 1,
 
                 app_title: {
                     visible: 'Vista',
@@ -192,7 +202,7 @@
 
                 var indexes = menu_name.split('-');
 
-                var main_menu = this.$store.state.navigation.main_menu;
+                var main_menu = this.$store.getters['navigation']()['main_menu'];
                 var current_menu_level = main_menu;
 
                 this.main_menu_breadcrumb = [];
@@ -200,8 +210,12 @@
                     this.main_menu_breadcrumb.push({
                         text: current_menu_level[ indexes[i]-1 ].text,
                     });
-                    current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                    if (current_menu_level[ indexes[i]-1 ].children) {
+                        current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                    }
                 }
+
+                this.page_title = current_menu_level[ indexes[indexes.length-1]-1 ].text;
 
                 this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb);
 
@@ -222,8 +236,12 @@
                     this.sub_menu_breadcrumb.push({
                         text: current_menu_level[ indexes[i]-1 ].text,
                     });
-                    current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                    if (current_menu_level[ indexes[i]-1 ].children) {
+                        current_menu_level = current_menu_level[ indexes[i]-1 ].children;
+                    }
                 }
+
+                this.page_title = current_menu_level[ indexes[indexes.length-1]-1 ].text;
 
                 this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb.concat(this.sub_menu_breadcrumb));
 
@@ -236,11 +254,31 @@
             //     'this.$store.state.BasicLayout.menu_items': this.$store.state.BasicLayout.menu_items,
             // });
 
+            var navigation = this.$store.getters['navigation']();
+
+            var current_menu = navigation.main_menu[0];
+
+            for (const i in navigation.main_menu) {
+                if (navigation.main_menu.hasOwnProperty(i)) {
+                    const element = navigation.main_menu[i];
+                    
+                    if (this.$router.resolve(this.$route.matched[0].path).href === element.redirect_url) {
+                        this.active_menu_name = element.name;
+                        current_menu = element;
+                    }
+                }
+            }
+            this.page_title = current_menu.text;
+
             this.$store.commit('BasicLayout/set_breadcrumbs',[
                 {
-                    text: this.$store.state.navigation.main_menu[0].text    //<-- einai k t arxiko active...
+                    text: current_menu.text    //<-- einai k t arxiko active...
                 }
             ]);
+
+            console.log({
+                current_menu: current_menu.name,
+            });
 
         },
     }

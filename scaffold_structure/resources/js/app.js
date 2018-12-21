@@ -80,7 +80,13 @@ const store = new Vuex.Store({
         increment (state) {
             state.count++;
         }
-    }
+    },    
+    getters: {
+        navigation: (state) => (data) => {
+            // console.log(data);
+            return state.navigation;
+        }
+    },
 });
 
 
