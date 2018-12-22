@@ -59,11 +59,11 @@
                     <Submenu v-for="menu_item in this.$store.getters['navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
                         <template slot="title">
                             <Icon :type="menu_item.icon_type"></Icon>
-                            <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'grey'}">{{menu_item.text}}</span></router-link>
+                            <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white', width: '65%'}">{{menu_item.text}}</span></router-link>
                         </template>
                         <MenuGroup v-for="submenu_group in menu_item.children" v-bind:data="submenu_group" v-bind:key="submenu_group.name" :title="submenu_group.text">
                             <MenuItem v-for="submenu_group_item in submenu_group.children" v-bind:data="submenu_group_item" v-bind:key="submenu_group_item.name" :name="submenu_group_item.name">
-                                <router-link :to="submenu_group_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white'}">{{submenu_group_item.text}}</span></router-link>
+                                <router-link :to="submenu_group_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white', width: '100%'}">{{submenu_group_item.text}}</span></router-link>
                             </MenuItem>
                         </MenuGroup>
                     </Submenu>
