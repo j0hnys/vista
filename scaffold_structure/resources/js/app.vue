@@ -9,7 +9,12 @@
     </div>
 </template>
 <script>
+    import app_layout from './components/BasicLayout.vue';
+
     export default {
+        components: {
+            'app-layout': app_layout,
+        },
         data () {
             return {}
         },
