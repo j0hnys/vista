@@ -81,6 +81,26 @@ class Install
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         
         file_put_contents($router_full_path, $stub);
+
+
+        //
+        //write main_menu.js
+        $main_menu_full_path = base_path().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
+        
+        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
+        $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+        
+        file_put_contents($main_menu_full_path, $stub);
+
+
+        //
+        //write demo_sub_menu.js
+        $demo_sub_menu_full_path = base_path().'/'.$resources_relative_path_name.'/js/navigation/sub_menus/demo_sub_menu.js';
+        
+        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/navigation/sub_menus/demo_sub_menu.js.stub');
+        $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+        
+        file_put_contents($demo_sub_menu_full_path, $stub);
         
         
 
