@@ -25,16 +25,16 @@
     }
 </style>
 <template>
-    <div class="{{vst_entity}}_create">
+    <div class="{{vst_entity}}_update">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
                 <h1>
-                    test
+                    test update
                 </h1>
 
 
                 <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
-                    
+
                     <!-- demo form items -->
                     <!-- 
                         <FormItem label="Name" prop="name">
@@ -82,70 +82,16 @@
                         <FormItem label="Desc" prop="desc">
                             <Input v-model="formValidate.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="Enter something..."></Input>
                         </FormItem>
-                        <FormItem label="src" prop="src">
-                            <Upload action="" :before-upload="handleUpload">
-                                <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                            </Upload>
-                            <div v-if="formValidate.file !== null">Upload file: {{ formValidate.file.name }} </div>
-                        </FormItem>
                      -->
                     <!-- end of demo form items -->
 
 
                     {{# form_elements }}
-                    <FormItem label="{{column_name}}" prop="{{column_name}}">
-                    {{# validation_rules }}
-                        {{# attributes }}
-                            {{# type }}
-                            {{# string }}
-                        <Input v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></Input>
-                            {{/ string }}
-                            {{# number }}
-                        <InputNumber v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></InputNumber>
-                            {{/ number }}
-                            {{# switch }}
-                        <i-switch v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <span slot="{{name}}">{{text}}</span>
-                            {{/ fields }}
-                        </i-switch>
-                            {{/ switch }}
-                            {{# date }}
-                        <DatePicker type="{{element_type}}" v-model="formValidate.{{column_name}}"></DatePicker>
-                            {{/ date }}
-                            {{# text }}
-                        <Input type="{{element_type}}" v-model="formValidate.{{column_name}}"></Input>
-                            {{/ text }}
-                            {{# slider }}
-                        <Slider v-model="formValidate.{{column_name}}" range></Slider>
-                            {{/ slider }}
-                            {{# radio }}
-                        <RadioGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Radio label="{{name}}">{{text}}</Radio>
-                            {{/ fields }}
-                        </RadioGroup>
-                            {{/ radio }}
-                            {{# checkbox }}
-                        <CheckboxGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Checkbox label="{{name}}">{{text}}</Checkbox>
-                            {{/ fields }}
-                        </CheckboxGroup>
-                            {{/ checkbox }}
-                            {{# file }}
-                        <Upload action="" :before-upload="handleUpload">
-                            <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                        </Upload>
-                        <div v-if="formValidate.file !== null">Upload file: {{ formValidate.file.name }} </div>
-                            {{/ file }}
-                            {{/ type }}
-                        {{/ attributes }}
-                    {{/ validation_rules }}
+                    <FormItem label="{{parameter_name}}" prop="{{parameter_name}}">
+                        <Input v-model="formValidate.{{parameter_name}}" placeholder="Enter your {{parameter_name}}"></Input>
                     </FormItem>
                     {{/ form_elements }}
-                    
-                    
+
                     <FormItem>
                         <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
                     </FormItem>
@@ -161,7 +107,7 @@
         data() {
             //
             //app state registration
-            this.$store.registerModule(['pages','{{Vst_entity}}_create'], {
+            this.$store.registerModule(['pages','{{Vst_entity}}_update'], {
                 namespaced: true,
                 state: {
                     test_parameter: '',
@@ -178,12 +124,9 @@
             return {
                 local_parameter: 'local',
 
-
                 formValidate: {
                     {{# form_data_parameters }}
-                    {{# attributes }}
-                    {{column_name}}: {{default_value}},
-                    {{/ attributes }}
+                    {{parameter_name}}: null,
                     {{/ form_data_parameters }}
                 },
                 ruleValidate: {
@@ -216,34 +159,12 @@
                     //     { required: true, message: 'Please enter a personal introduction', trigger: 'blur' },
                     //     { type: 'string', min: 20, message: 'Introduce no less than 20 words', trigger: 'blur' }
                     // ]
-                    // src: [
-                    //     { required: false, message: 'The src cannot be empty', trigger: 'change' }
-                    // ],
                     // //--- end of demo validations---
                     
 
                     {{# validation_rules }}
-                    {{column_name}}: [
-                        { 
-                        {{# validation_rules }}
-                            {{# required }}
-                            required: true, 
-                            {{/ required }}
-                            {{# type }}
-                            type: '{{type}}', 
-                            {{/ type }}
-                            {{# max }}
-                            max: {{max}}, 
-                            {{/ max }}
-                            {{# min }}
-                            min: {{min}}, 
-                            {{/ min }}
-                            {{# trigger }}
-                            trigger: '{{trigger}}',
-                            {{/ trigger }}
-                            message: 'The {{column_name}} cannot be empty', 
-                        {{/ validation_rules }}
-                        }
+                    {{parameter_name}}: [
+                        { required: true, message: 'The {{parameter_name}} cannot be empty', trigger: 'blur' }
                     ],
                     {{/ validation_rules }}
 
@@ -255,23 +176,15 @@
             ajax() {
                 var self = this;
                 return {
-                    create(data) {
-
-                        var form_data = new FormData();
-                        
-                        for (const key in data) {
-                            if (data.hasOwnProperty(key)) {
-                                const element = data[key];
-                                
-                                if (key == 'file') {
-                                    form_data.append(key, data[key], data[key].name);
-                                } else {
-                                    form_data.append(key, data[key]);
-                                }
-                            }
-                        }
-
-                        window.axios.post( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}',  form_data ).then((response) => {
+                    get(id='') {
+                        window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}/'+id ).then(({ data }) => {
+                            self.formValidate = data;
+                        }).catch(error => {
+                            console.log(error);
+                        });
+                    },
+                    update(id,data) {
+                        window.axios.put( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}/'+id,  data ).then((response) => {
                             // Once AJAX resolves we can update the Crud with the new color
                             self.$Message.success('Success!');
                         }).catch(error => {
@@ -280,23 +193,19 @@
                     },
                 }
             },
-            handleUpload (file) {
-                this.formValidate.file = file;
-                return false;
-            },
             handleSubmit (name) {
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        
+
                         var formValidate = this.formValidate;
 
-                        this.ajax().create(formValidate);
-                        
+                        this.ajax().update(this.$route.params.id, formValidate);
+
                     } else {
                         this.$Message.error('Fail!');
                     }
                 })
-            },
+            }
         },
         mounted() {
             // console.log('test form mounted');
@@ -306,6 +215,9 @@
             //     // 'this.$store.state.Index': this.$store.state.Index,
             //     'this.$route': this.$route,
             // });
+
+            this.ajax().get(this.$route.params.id);
+
         },
     }
 </script>

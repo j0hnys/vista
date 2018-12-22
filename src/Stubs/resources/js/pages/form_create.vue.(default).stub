@@ -93,55 +93,8 @@
 
 
                     {{# form_elements }}
-                    <FormItem label="{{column_name}}" prop="{{column_name}}">
-                    {{# validation_rules }}
-                        {{# attributes }}
-                            {{# type }}
-                            {{# string }}
-                        <Input v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></Input>
-                            {{/ string }}
-                            {{# number }}
-                        <InputNumber v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></InputNumber>
-                            {{/ number }}
-                            {{# switch }}
-                        <i-switch v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <span slot="{{name}}">{{text}}</span>
-                            {{/ fields }}
-                        </i-switch>
-                            {{/ switch }}
-                            {{# date }}
-                        <DatePicker type="{{element_type}}" v-model="formValidate.{{column_name}}"></DatePicker>
-                            {{/ date }}
-                            {{# text }}
-                        <Input type="{{element_type}}" v-model="formValidate.{{column_name}}"></Input>
-                            {{/ text }}
-                            {{# slider }}
-                        <Slider v-model="formValidate.{{column_name}}" range></Slider>
-                            {{/ slider }}
-                            {{# radio }}
-                        <RadioGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Radio label="{{name}}">{{text}}</Radio>
-                            {{/ fields }}
-                        </RadioGroup>
-                            {{/ radio }}
-                            {{# checkbox }}
-                        <CheckboxGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Checkbox label="{{name}}">{{text}}</Checkbox>
-                            {{/ fields }}
-                        </CheckboxGroup>
-                            {{/ checkbox }}
-                            {{# file }}
-                        <Upload action="" :before-upload="handleUpload">
-                            <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                        </Upload>
-                        <div v-if="formValidate.file !== null">Upload file: {{ formValidate.file.name }} </div>
-                            {{/ file }}
-                            {{/ type }}
-                        {{/ attributes }}
-                    {{/ validation_rules }}
+                    <FormItem label="{{parameter_name}}" prop="{{parameter_name}}">
+                        <Input v-model="formValidate.{{parameter_name}}" placeholder="Enter your {{parameter_name}}"></Input>
                     </FormItem>
                     {{/ form_elements }}
                     
@@ -181,9 +134,7 @@
 
                 formValidate: {
                     {{# form_data_parameters }}
-                    {{# attributes }}
-                    {{column_name}}: {{default_value}},
-                    {{/ attributes }}
+                    {{parameter_name}}: null,
                     {{/ form_data_parameters }}
                 },
                 ruleValidate: {
@@ -223,27 +174,8 @@
                     
 
                     {{# validation_rules }}
-                    {{column_name}}: [
-                        { 
-                        {{# validation_rules }}
-                            {{# required }}
-                            required: true, 
-                            {{/ required }}
-                            {{# type }}
-                            type: '{{type}}', 
-                            {{/ type }}
-                            {{# max }}
-                            max: {{max}}, 
-                            {{/ max }}
-                            {{# min }}
-                            min: {{min}}, 
-                            {{/ min }}
-                            {{# trigger }}
-                            trigger: '{{trigger}}',
-                            {{/ trigger }}
-                            message: 'The {{column_name}} cannot be empty', 
-                        {{/ validation_rules }}
-                        }
+                    {{parameter_name}}: [
+                        { required: true, message: 'The {{parameter_name}} cannot be empty', trigger: 'blur' }
                     ],
                     {{/ validation_rules }}
 

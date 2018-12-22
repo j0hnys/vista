@@ -96,5 +96,5 @@ gia na kanw dyo diaforetika single page applications (client ennow) prepei:
     - etsi tha ginontai taytoxrona ola compile san na eixa mia efarmogh
 
 TODO
-    - na kanw stubs k t main_menu, sub_menu giati to MIX_* prepei k ekei na einai opws t config file
-    - na vgalw t register toy BasicLayout apo t app.js k na to valw me import mesa sto app.vue
+    -ok- na kanw stubs k t main_menu, sub_menu giati to MIX_* prepei k ekei na einai opws t config file
+    -ok- na vgalw t register toy BasicLayout apo t app.js k na to valw me import mesa sto app.vue
