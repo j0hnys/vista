@@ -26,16 +26,23 @@ class Install
             throw new \Exception("NO CONFIGURATION FILE FOUND!! execute \"php artisan vendor:publish\"", 1);
         }
 
+        $MIX_BASE_URL = 'MIX_BASE_URL';
         $MIX_BASE_RELATIVE_URL = 'MIX_BASE_RELATIVE_URL';
+        $MIX_STORAGE_URL = 'MIX_STORAGE_URL';
         foreach ($configuration['spas'] as $spa_configuration) {
             if (!empty($spa_configuration['resource_folder_name'])) {
                 if ($spa_configuration['resource_folder_name'] == $resources_relative_path_name) {
 
                     //set MIX_BASE_RELATIVE_URL
-                    if (!empty($spa_configuration['mix_base_relative_url_env_name'])) {
+                    if (   !empty($spa_configuration['mix_base_url_env_name'])
+                        && !empty($spa_configuration['mix_base_relative_url_env_name'])
+                        && !empty($spa_configuration['mix_storage_url_env_name'])
+                        ) {
+                        $MIX_BASE_URL = $spa_configuration['mix_base_url_env_name'];
                         $MIX_BASE_RELATIVE_URL = $spa_configuration['mix_base_relative_url_env_name'];
+                        $MIX_STORAGE_URL = $spa_configuration['mix_storage_url_env_name'];
                     }  else {
-                        throw new \Exception("no \"mix_base_relative_url_env_name\" found in spa", 1);
+                        throw new \Exception("no \"mix_base_url_env_name\" or \"mix_base_relative_url_env_name\" or \"mix_storage_url_env_name\"  found in spa", 1);
                     }
 
                     //set public_relative_path_name
@@ -102,6 +109,20 @@ class Install
         
         file_put_contents($demo_sub_menu_full_path, $stub);
         
+
+        //
+        //update env
+        $env_path = base_path().'/.env';
+        
+        $lines = file($env_path); 
+        $lines []= "\n";
+        $lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/public');
+        $lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/public');
+        $lines []= str_replace('{{MIX_STORAGE_URL}}', strtoupper($MIX_STORAGE_URL), "\n".'{{MIX_STORAGE_URL}}=/public/storage/app');
+        
+        $fp = fopen($env_path, 'w'); 
+        fwrite($fp, implode('', $lines)); 
+        fclose($fp); 
         
 
         //
