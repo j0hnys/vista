@@ -48,7 +48,7 @@ The package on install creates among others the following folder structure
     |- views
         |->iview.blade.php
 ```
-Where `|* public_*` and `|* resources_*` is the SPA's directories in the root folder of a laravel application.
+Where `|* public_*` and `|* resources_*` are the SPA's directories in the root folder of a laravel application.
 
 This package supports multiple SPA's from one laravel instance. For example we could have a pair `|* public_front_end`, `|* resources_front_end` and `|* public_back_end`, `|* resources_back_end` that work in parallel with the same controllers, models, e.t.c. just by configuring webpack.mix.js accordingly. This is described in more detail at the installation section below.
 
@@ -64,7 +64,7 @@ The main layout of a SPA is presented in the image below
 
 There are four menu levels split in main menu and sub menus. Main menu is at the left sidebar and is the same for every page, it can facilitate two levels. Sub menu's are defined in the router and presented above the content and can facilitate another two levels. There is also place for notifications and user account menus in the top right corner. 
 
-As of now an automated CRUD functionallity is provided by code generation. It creates three pages (`*_create.vue`, `*_list_delete.vue`, `*_update.vue`) at the `pages` folder which correspond to viewing and deleting and creating, updating records to the database from a specific model. In the images below this functionallity is presented.
+As of now an automated CRUD functionallity is provided by code generation. It creates three pages (`*_create.vue`, `*_list_delete.vue`, `*_update.vue`) at the `pages` folder which correspond to viewing and deleting and creating, updating records to the database from a specific model. For every page it is assumed that there a resource exist (restful CRUD from laravel) named with the prefix in every page (e.x. `user_create.vue` assumes that there is a resource named `user` at url `/trident/resource/user` for now) In the images below this functionallity is presented.
 
 List/Delete:
 
