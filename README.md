@@ -7,7 +7,7 @@ this package is alpha software at the moment
 
 The purpose of this package is to generate a web UI for a laravel application using laravel's models, migrations and validations (Form Request Validation).
 
-The package generates a Single Page Application (SPA) and functionallity through custom artisan commands which generate code. It uses vue js and iview UI component library as a foundation.
+The package generates a Single Page Application (SPA) and functionallity through custom artisan commands which generate code. It uses vue js and iview UI Toolkit as a foundation.
 
 ## Application architecture
 
