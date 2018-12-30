@@ -66,13 +66,48 @@ There are four menu levels split in main menu and submenus. Main menu is at the 
 
 As of now an automated CRUD functionallity is provided by code generation. It creates three pages (`*_create.vue`, `*_list_delete.vue`, `*_update.vue`) at the `pages` folder which correspond to viewing and deleting records to the database from a model and creating, updating accordingly. In the images below this functionallity is presented.
 
+List/Delete:
+
 ![list_delete](images/list_delete.png)
+
+Create/Update:
 
 ![create_update](images/create_update.png)
 
 
 
 # installation
+
+## to add to a laravel project as a package
+add 
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/j0hnys/vista"
+    }
+],
+```
+and 
+```json
+"require-dev": {
+    "j0hnys/vista": "dev-master"
+},
+```
+to laravel's `composer.json` and then execute `composer update`
+
+add
+```json
+"dependencies": {
+    "iview": "^3.0.0",
+    "iview-loader": "*",
+    "vue": "^2.5.16",
+    "vuex": "^3.0.1",
+    "vue-router": "^2.8.1"
+}
+```
+to laravel's `package.json` and then execute `npm install`
+
 
 After publishing the configuration of this package (`php artisan vendor:publish`) the configuration can be found at `config/vista.php`. Below there is a snippet of that file
 
@@ -132,6 +167,14 @@ mix.js('resources/js/app.js', 'public/js')
 mix.js('resources_front_test/js/app.js', 'public_front_test/js')
    .sass('resources_front_test/sass/app.scss', 'public_front_test/css');
 ```
+
+# Available artisan commands
+
+| Command | Description |
+|---|---|
+vista:export:model  | export a model's schema
+vista:generate:crud | Create a Spa CRUD
+vista:install       | Vista installer
 
 # Basic usage
 
