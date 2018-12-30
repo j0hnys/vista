@@ -5,6 +5,7 @@ namespace j0hnys\Vista;
 use Illuminate\Support\ServiceProvider;
 use j0hnys\Vista\Console\Commands\GenerateCrud;
 use j0hnys\Vista\Console\Commands\Install;
+use j0hnys\Vista\Console\Commands\ExportModel;
 // . . .
 
 class VistaServiceProvider extends ServiceProvider
@@ -36,11 +37,15 @@ class VistaServiceProvider extends ServiceProvider
         $this->app->singleton('vista.install', function ($app) {
             return new Install();
         });
+        $this->app->singleton('vista.export_model', function ($app) {
+            return new ExportModel();
+        });
         // . . .
 
         $this->commands([
             'vista.generate_crud',
             'vista.install',
+            'vista.export_model',
             // . . .
         ]);
     }

@@ -33,7 +33,7 @@
                 </h1>
 
 
-                <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="80">
+                <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="150">
 
                     <!-- demo form items -->
                     <!-- 

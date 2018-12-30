@@ -68,7 +68,7 @@ class CrudBuilder
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
             $stub = $mustache->render($stub, [
-                'table_columns' => $model_schema_parameters,
+                'table_columns' => $model_schema,
             ]);
 
             
