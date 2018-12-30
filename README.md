@@ -1,19 +1,19 @@
 # vista
-laravel UI generator using iview, vue
+A laravel UI generator using iview, vue
 
 this package is alpha software at the moment
 
 # Introduction
 
-The purpose of this package is to generate a web UI for a laravel application using laravel's models, migrations and validations (FormRequests).
+The purpose of this package is to generate a web UI for a laravel application using laravel's models, migrations and validations (Form Request Validation).
 
-The package generates a Single Page Application (SPA) and generates CRUD functionallity through custom artisan commands which generate code. It uses vue js and iview UI component library as a foundation.
+The package generates a Single Page Application (SPA) and functionallity through custom artisan commands which generate code. It uses vue js and iview UI component library as a foundation.
 
 ## Application architecture
 
 ### Preface
 
-The main design principles behind the SPA architecture is to set a thin client structure which communicates with the server through restful API's. It wants to promote the notion that the front-end should be only for presentation, leaving the back-end to do the heavy lifting. This is the main reason for a more simplified routing and menu architecture. The code generation that is provided through this package's artisan commands imposes this simplicity. 
+The main design principles behind the SPA architecture is to set a thin client structure which communicates with the server through restful API's. It wants to promote the notion that the front-end should be for presentation only, leaving the back-end to do the heavy lifting. This is the main reason for a simple routing and menu architecture. The code generators that are provided follow this simplicity. 
 
 ### Folder structure
 
@@ -48,9 +48,9 @@ The package on install creates among others the following folder structure
     |- views
         |->iview.blade.php
 ```
-Where `|* public_*` and `|* resources_*` is the SPAs directories in the root folder of a laravel application.
+Where `|* public_*` and `|* resources_*` is the SPA's directories in the root folder of a laravel application.
 
-This package supports multiple SPA's from one laravel instance. For example we could have a pair `|* public_front_end`, `|* resources_front_end` and `|* public_back_end`, `|* resources_back_end` that work in parallel with the same controllers, models, e.t.c. just by configuring webpack.mix.js accordingly. This is described in more details at the installation section below.
+This package supports multiple SPA's from one laravel instance. For example we could have a pair `|* public_front_end`, `|* resources_front_end` and `|* public_back_end`, `|* resources_back_end` that work in parallel with the same controllers, models, e.t.c. just by configuring webpack.mix.js accordingly. This is described in more detail at the installation section below.
 
 The general workflow for adding a new page follows the following pattern:
 
@@ -58,13 +58,13 @@ The general workflow for adding a new page follows the following pattern:
 - updating the `router.js` with this new vue component
 - updating the `main_menu.js` in order to have a visual route to the new page
 
-The main layout is presented in the image below
+The main layout of a SPA is presented in the image below
 
 ![main_layout](images/main_menu_sub_menu_(edited).png)
 
-There are four menu levels split in main menu and submenus. Main menu is at the left sidebar and is the same for every page, it can facilitate two levels. Sub menu's are defined in the router and presented above the content and can facilitate another two levels. There is also place for notifications and user account in the top right corner. 
+There are four menu levels split in main menu and sub menus. Main menu is at the left sidebar and is the same for every page, it can facilitate two levels. Sub menu's are defined in the router and presented above the content and can facilitate another two levels. There is also place for notifications and user account menus in the top right corner. 
 
-As of now an automated CRUD functionallity is provided by code generation. It creates three pages (`*_create.vue`, `*_list_delete.vue`, `*_update.vue`) at the `pages` folder which correspond to viewing and deleting records to the database from a model and creating, updating accordingly. In the images below this functionallity is presented.
+As of now an automated CRUD functionallity is provided by code generation. It creates three pages (`*_create.vue`, `*_list_delete.vue`, `*_update.vue`) at the `pages` folder which correspond to viewing and deleting and creating, updating records to the database from a specific model. In the images below this functionallity is presented.
 
 List/Delete:
 
@@ -187,14 +187,14 @@ First we need to export the data to a json file using the following artisan comm
 php artisan vista:export:model test_model
 ```
 
-where `test_model` is a laravel model.
+where `test_model` is the name of a laravel model located at `app` folder.
 
-and than execute:
+Than execute:
 ```
 php artisan vista:generate:crud test_tt 'app/Models/Schemas/Exports/test_model.json' resources_front_test
 ```
 
-where the first parameter is the exported model and the second is the SPA that the pages are going to be created.
+where the first parameter is the prefix of the pages, the next parameter is the exported model and the last is the SPA that the pages are going to be placed.
 
 After completing this process the following changes have taken place:
 
