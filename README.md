@@ -142,7 +142,7 @@ After setting the configuration file execute:
 php artisan vista:install resources_test_test
 ```
 
-to install the `resources_test_test` SPA.
+to install the `resources_front_test` SPA.
 
 Lastly the `webpack.mix.js` has to be modified in order to support more than one SPA's. A sample `webpack.mix.js` is provided below:
 ```js
