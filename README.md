@@ -201,4 +201,6 @@ After completing this process the following changes have taken place:
 - A new set of pages will be created at `pages` folder (`test_tt_list_delete.vue`, `test_tt_list_delete.vue`, `test_tt_update.vue`)  
 - the `router.js` will be automatically updated with the routes for the new pages
 
+It is noted once again that a resource named `test_tt` should exists in laravel with url `/trident/resource/test_tt`.
+
 Menu placement is left to the developer. It is done by modifying `main_menu.js` or sub_menus accordingly,
