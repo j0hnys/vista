@@ -139,7 +139,7 @@ As said in the application architecture section more than one SPA's can be creat
 
 After setting the configuration file execute:
 ```
-php artisan vista:install resources_test_test
+php artisan vista:install resources_front_test
 ```
 
 to install the `resources_front_test` SPA.
