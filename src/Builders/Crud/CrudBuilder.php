@@ -123,9 +123,9 @@ class CrudBuilder
         $routes_path = base_path().'/'.$resources_relative_path_name.'/js/router.pages.js';
         
         $lines = file($routes_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue");');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue");');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue");');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue").default;');
         
         $fp = fopen($routes_path, 'w'); 
         fwrite($fp, implode('', $lines)); 
