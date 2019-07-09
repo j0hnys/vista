@@ -1,6 +1,8 @@
 <?php
 
 namespace j0hnys\Vista\Builders\Crud;
+
+use Illuminate\Container\Container as App;
 use j0hnys\Vista\Base\Storage\Disk;
 
 class CrudBuilder

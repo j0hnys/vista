@@ -1,6 +1,7 @@
 <?php
 
 namespace j0hnys\Vista\Builders\Setup;
+
 use j0hnys\Vista\Base\Storage\Disk;
 
 class Install
