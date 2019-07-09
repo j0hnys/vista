@@ -25,12 +25,12 @@ class Model
      * @param string $name
      * @throws \Exception
      */
-    public function generate($td_entity_name)
+    public function generate($td_entity_name, $td_entity_namespace)
     {
         
         $td_entity_name = ucfirst($td_entity_name);
 
-        $model = $this->app->make('App\\'.$td_entity_name);
+        $model = $this->app->make($td_entity_namespace);
 
         $db_table_name = $model->getTable();
         $db_table_fillables = $model->getFillable();

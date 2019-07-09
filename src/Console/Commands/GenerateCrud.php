@@ -12,7 +12,7 @@ class GenerateCrud extends Command
      *
      * @var string
      */
-    protected $signature = "vista:generate:crud {name} {schema_path?} {resources_relative_path_name?}";
+    protected $signature = "vista:generate:crud {name} {--schema_path=} {--resources_relative_path_name=}";
 
     /**
      * The console command description.
@@ -45,8 +45,8 @@ class GenerateCrud extends Command
     {
         try {
             $name = $this->argument('name');
-            $schema_path = $this->argument('schema_path') ? $this->argument('schema_path') : '';
-            $resources_relative_path_name = $this->argument('resources_relative_path_name') ? $this->argument('resources_relative_path_name') : '';
+            $schema_path = $this->option('schema_path') ? $this->option('schema_path') : '';
+            $resources_relative_path_name = $this->option('resources_relative_path_name') ? $this->option('resources_relative_path_name') : '';
             
 
             $crud = $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
