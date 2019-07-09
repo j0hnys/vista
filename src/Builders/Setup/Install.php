@@ -107,7 +107,7 @@ class Install
         //write main_menu.js
         $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
         
-        $stub = $this->storage_disk->readFile(]__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         
         $this->storage_disk->writeFile($main_menu_full_path, $stub);
@@ -162,7 +162,7 @@ class Install
         ]);
 
     }
-    
+
 
 
 }
