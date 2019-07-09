@@ -23,6 +23,21 @@ class Install extends Command
     protected $description = 'Vista installer';
 
     /**
+     * @var Setup\Install
+     */
+    private $install;
+
+    public function __construct(Setup\Install $install = null)
+    {
+        parent::__construct();
+
+        $this->install = new Setup\Install();
+        if (!empty($install)) {
+            $this->install = $install;
+        }
+    }
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -32,9 +47,10 @@ class Install extends Command
         try {
             $resources_relative_path_name = $this->argument('resources_relative_path_name') ? $this->argument('resources_relative_path_name') : '';
 
-            $install = new Setup\Install($resources_relative_path_name);
             
+            $install = $this->install->run($resources_relative_path_name);            
 
+            
             $this->info('Vista installed successfully');
             
         } catch (\Exception $ex) {

@@ -12,7 +12,7 @@ class GenerateCrud extends Command
      *
      * @var string
      */
-    protected $signature = "vista:generate:crud {name} {schema_path?} {resources_relative_path_name?} {--only=} {--api} {--parent=} ";
+    protected $signature = "vista:generate:crud {name} {schema_path?} {resources_relative_path_name?}";
 
     /**
      * The console command description.
@@ -20,6 +20,21 @@ class GenerateCrud extends Command
      * @var string
      */
     protected $description = 'Create a Spa CRUD';
+
+    /**
+     * @var Crud\CrudBuilder
+     */
+    private $crud_builder;
+
+    public function __construct(Crud\CrudBuilder $crud_builder = null)
+    {
+        parent::__construct();
+
+        $this->crud_builder = new Crud\CrudBuilder();
+        if (!empty($crud_builder)) {
+            $this->crud_builder = $crud_builder;
+        }
+    }
     
     /**
      * Execute the console command.
@@ -32,16 +47,10 @@ class GenerateCrud extends Command
             $name = $this->argument('name');
             $schema_path = $this->argument('schema_path') ? $this->argument('schema_path') : '';
             $resources_relative_path_name = $this->argument('resources_relative_path_name') ? $this->argument('resources_relative_path_name') : '';
-            $only = $this->option('only');
-            $api = $this->option('api');
-            $withArr = !empty($with) ? explode(",", $with) : [];
-            $onlyArr = !empty($only) ? explode(",", $only) : '';
-            $parent = $this->option('parent');
-           
+            
 
-            $crud = new Crud\CrudBuilder($name, $schema_path, $resources_relative_path_name);
-            // $controllerCrud->save();
-
+            $crud = $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
+            
 
             $this->info($name.' CRUD successfully created');
             

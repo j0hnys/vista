@@ -12,7 +12,7 @@ class ExportModel extends Command
      *
      * @var string
      */
-    protected $signature = "vista:export:model {entity_name} {model?} {--only=} {--api} {--parent=} ";
+    protected $signature = "vista:export:model {entity_name}";
 
     /**
      * The console command description.
@@ -20,6 +20,21 @@ class ExportModel extends Command
      * @var string
      */
     protected $description = 'export a models schema';
+
+    /**
+     * @var Export\Model
+     */
+    private $export_model;
+
+    public function __construct(Export\Model $export_model = null)
+    {
+        parent::__construct();
+
+        $this->export_model = new Export\Model();
+        if (!empty($export_model)) {
+            $this->export_model = $export_model;
+        }
+    }
     
     /**
      * Execute the console command.
@@ -30,18 +45,10 @@ class ExportModel extends Command
     {
         try {
             $entity_name = $this->argument('entity_name');
-            $model = $this->argument('model');
-            $only = $this->option('only');
-            $api = $this->option('api');
-            $withArr = !empty($with) ? explode(",", $with) : [];
-            $onlyArr = !empty($only) ? explode(",", $only) : '';
-            $parent = $this->option('parent');
 
-            $builders = new Export\Model($entity_name);
+            $builders = $this->export_model->generate($entity_name);
 
-            $this->info($entity_name.' model\'s export successful!');
-
-            
+            $this->info($entity_name.' model\'s export successful!');           
             
         } catch (\Exception $ex) {
             $this->error($ex->getMessage() . ' on line ' . $ex->getLine() . ' in ' . $ex->getFile());

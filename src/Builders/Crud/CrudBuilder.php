@@ -1,19 +1,32 @@
 <?php
 
 namespace j0hnys\Vista\Builders\Crud;
+use j0hnys\Vista\Base\Storage\Disk;
 
 class CrudBuilder
 {
+    private $mustache;
+    private $storage_disk;
+    
+    public function __construct(Disk $storage_disk = null)
+    {
+        $this->mustache = new \Mustache_Engine;
+        $this->storage_disk = new Disk();
+        if (!empty($storage_disk)) {
+            $this->storage_disk = $storage_disk;
+        }
+        $this->app = new App();
+    }
+
     
     /**
      * Crud constructor.
      * @param string $name
      * @throws \Exception
      */
-    public function __construct(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
+    public function generate(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
     {
         
-        $mustache = new \Mustache_Engine;
         $resources_relative_path_name = 'resources';
         if (!empty($resources_relative_path_name_)) {
             $resources_relative_path_name = $resources_relative_path_name_;
@@ -41,134 +54,111 @@ class CrudBuilder
 
 
         if (!empty($model_schema_relative_fullpath)) {
-            // $model_schema = file_get_contents(base_path().'/app/Models/Schemas/Exports/'.ucfirst(strtolower($name)).'.json');
-            $model_schema = file_get_contents(base_path().$model_schema_relative_fullpath);
+            $model_schema = $this->storage_disk->readFile($this->storage_disk->getBasePath().$model_schema_relative_fullpath);
             $model_schema = json_decode($model_schema,true);
         } else {
             $model_schema = $this->defaultSchema();
         }
-        // $model_schema_parameters = array_map(function($element){
-        //     return [
-        //         'parameter_name' => $element['column_name'],
-        //     ];
-        // },$model_schema);
 
 
         //
         //list delete generation
-        $list_delete_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
         
-        if (!file_exists($list_delete_path)) {
-            $this->makeDirectory($list_delete_path);
+        if (!$this->storage_disk->fileExists($list_delete_path)) {
+            $this->storage_disk->makeDirectory($list_delete_path);
 
-            $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/pages/table_list_delete.vue.stub');
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/table_list_delete.vue.stub');
             
             //MIX_BASE_RELATIVE_URL
             $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $mustache->render($stub, [
+            $stub = $this->mustache->render($stub, [
                 'table_columns' => $model_schema,
             ]);
 
             
-            file_put_contents($list_delete_path, $stub);
+            $this->storage_disk->writeFile($list_delete_path, $stub);
         }
 
         //
         //create generation
-        $create_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
+        $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
         
-        if (!file_exists($create_path)) {
-            $this->makeDirectory($create_path);
+        if (!$this->storage_disk->fileExists($create_path)) {
+            $this->storage_disk->makeDirectory($create_path);
 
-            $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/pages/form_create.vue.stub');
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/form_create.vue.stub');
 
             $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $mustache->render($stub, [
+            $stub = $this->mustache->render($stub, [
                 'form_elements' => $model_schema,
                 'form_data_parameters' => $model_schema,
                 'validation_rules' => $model_schema,
             ]);
             
-            file_put_contents($create_path, $stub);
+            $this->storage_disk->writeFile($create_path, $stub);
         }
 
         //
         //update generation
-        $update_path = base_path().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
+        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
         
-        if (!file_exists($update_path)) {
-            $this->makeDirectory($update_path);
+        if (!$this->storage_disk->fileExists($update_path)) {
+            $this->storage_disk->makeDirectory($update_path);
 
-            $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/pages/form_update.vue.stub');
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/form_update.vue.stub');
 
             $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $mustache->render($stub, [
+            $stub = $this->mustache->render($stub, [
                 'form_elements' => $model_schema,
                 'form_data_parameters' => $model_schema,
                 'validation_rules' => $model_schema,
             ]);
             
-            file_put_contents($update_path, $stub);
+            $this->storage_disk->writeFile($update_path, $stub);
         }
         
 
         //
         //update routes
-        $routes_path = base_path().'/'.$resources_relative_path_name.'/js/router.pages.js';
+        $routes_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.pages.js';
         
-        $lines = file($routes_path); 
+        $lines = $this->storage_disk->readFileArray($routes_path); 
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue").default;');
         
-        $fp = fopen($routes_path, 'w'); 
-        fwrite($fp, implode('', $lines)); 
-        fclose($fp); 
+        $this->storage_disk->writeFileArray($routes_path, $lines); 
 
 
         //
         //update router
-        $router_path = base_path().'/'.$resources_relative_path_name.'/js/router.js';
+        $router_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.js';
         
-        $lines = file($router_path); 
+        $lines = $this->storage_disk->readFileArray($router_path); 
         $last = sizeof($lines) - 1; 
         unset($lines[$last]);   //<-- removing the 2 last lines
         unset($lines[$last-1]); //<--
 
-        $fp = fopen($router_path, 'w'); 
-        fwrite($fp, implode('', $lines)); 
-        fclose($fp); 
-
-        $stub = file_get_contents(__DIR__.'/../../Stubs/Crud/route.js.stub');
+        $this->storage_disk->writeFileArray($router_path, $lines); 
+        
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/Crud/route.js.stub');
 
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
         $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
         
-        file_put_contents($router_path, $stub, FILE_APPEND);
+        $this->storage_disk->writeFile($router_path, $stub, [
+            'append_file' => true,
+        ]);
             
     }
-    
-
-     /**
-     * Build the directory for the class if necessary.
-     *
-     * @param  string $path
-     * @return string
-     */
-    protected function makeDirectory($path)
-    {
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0777, true);
-        }
-    }
-
 
     /**
      * return the names of all events from trigger folder. (assumes that the namespace conventions are applied)
