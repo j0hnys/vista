@@ -150,7 +150,7 @@ class Install
             $stub = str_replace('{{td_entity}}', strtolower($name), $stub);
             $stub = str_replace('{{Td_entity}}', ucfirst(strtolower($name)), $stub);
             
-            $this->storage_disk->readFile($controller_path, $stub);
+            $this->storage_disk->writeFile($controller_path, $stub);
         }
 
 

@@ -17,7 +17,11 @@ class InstallTest extends TestCase
         $this->install = new Install( $this->storage_disk );
 
         $this->storage_disk->makeDirectory($this->base_path.'/resources/.');
-        $this->storage_disk->makeDirectory($this->base_path.'/public/.');        
+        $this->storage_disk->makeDirectory($this->base_path.'/public/.');
+        $this->storage_disk->makeDirectory($this->base_path.'/app/Http/Controllers/.');
+
+        $stub = $this->storage_disk->readFile($this->base_path.'/../Stubs/.env');
+        $this->storage_disk->writeFile($this->base_path.'/.env', $stub);
 
         //command behavioural test
         $this->mock_install = $this->createMock(Install::class);
