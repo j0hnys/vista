@@ -3,23 +3,34 @@
 namespace j0hnys\Vista\Builders\Export;
 
 use Illuminate\Container\Container as App;
+use j0hnys\Vista\Base\Storage\Disk;
 
 class Model
 {
+    private $mustache;
+    private $storage_disk;
+    
+    public function __construct(Disk $storage_disk = null)
+    {
+        $this->mustache = new \Mustache_Engine;
+        $this->storage_disk = new Disk();
+        if (!empty($storage_disk)) {
+            $this->storage_disk = $storage_disk;
+        }
+        $this->app = new App();
+    }
     
     /**
      * Crud constructor.
      * @param string $name
      * @throws \Exception
      */
-    public function __construct($td_entity_name)
+    public function generate($td_entity_name, $td_entity_namespace)
     {
         
         $td_entity_name = ucfirst($td_entity_name);
 
-        $app = new App();
-
-        $model = $app->make('App\\'.$td_entity_name);
+        $model = $this->app->make($td_entity_namespace);
 
         $db_table_name = $model->getTable();
         $db_table_fillables = $model->getFillable();
@@ -31,27 +42,18 @@ class Model
 
         //
         //export
-        $schema_export_path = base_path().'/app/Models/Schemas/Exports/'.$td_entity_name.'.json';
-        $this->makeDirectory($schema_export_path);
+        $schema_export_path = $this->storage_disk->getBasePath().'/app/Models/Schemas/Exports/'.$td_entity_name.'.json';
+        $this->storage_disk->makeDirectory($schema_export_path);
 
-        file_put_contents($schema_export_path, json_encode($tmp,JSON_PRETTY_PRINT));
-        
+        $this->storage_disk->writeFile($schema_export_path, json_encode($tmp,JSON_PRETTY_PRINT));        
 
     }
     
-     /**
-     * Build the directory for the class if necessary.
-     *
-     * @param  string $path
-     * @return string
+    /**
+     * @param string $column_name
+     * @param string $column_type
+     * @return array
      */
-    protected function makeDirectory($path): void
-    {
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0777, true);
-        }
-    }
-    
     protected function schemaItem(string $column_name = '', string $column_type = ''): array
     {
         $item = [

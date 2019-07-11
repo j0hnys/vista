@@ -2,18 +2,32 @@
 
 namespace j0hnys\Vista\Builders\Setup;
 
+use j0hnys\Vista\Base\Storage\Disk;
+
 class Install
 {
+    private $mustache;
+    private $storage_disk;
     
+    public function __construct(Disk $storage_disk = null)
+    {
+        $this->mustache = new \Mustache_Engine;
+        $this->storage_disk = new Disk();
+        if (!empty($storage_disk)) {
+            $this->storage_disk = $storage_disk;
+        }
+    }
+
+
     /**
      * Install constructor.
      * 
      * @return void
      */
-    public function __construct(string $resources_relative_path_name_ = '')
+    public function run(string $resources_relative_path_name_ = '')
     {
         
-        $app_path = base_path().'/app';
+        $app_path = $this->storage_disk->getBasePath().'/app';
 
         $resources_relative_path_name = 'resources';
         $public_relative_path_name = 'public';
@@ -59,21 +73,21 @@ class Install
 
         //
         //folder structure creation
-        if (!file_exists(base_path().'/'.$resources_relative_path_name.'/js/app.js')) {
+        if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/app.js')) {
             
             //resources folder 
             $source = __DIR__.'/../../../scaffold_structure/resources';
-            $destination = base_path().'/'.$resources_relative_path_name.'';
-            $this->makeDirectory($destination);
+            $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'';
+            $this->storage_disk->makeDirectory($destination);
             
-            $this->copyFoldersAndFiles($source, $destination);
+            $this->storage_disk->copyFoldersAndFiles($source, $destination);
             
             //public folder
             $source = __DIR__.'/../../../scaffold_structure/public';
-            $destination = base_path().'/'.$public_relative_path_name.'';
-            $this->makeDirectory($destination);
+            $destination = $this->storage_disk->getBasePath().'/'.$public_relative_path_name.'';
+            $this->storage_disk->makeDirectory($destination);
 
-            $this->copyFoldersAndFiles($source, $destination);
+            $this->storage_disk->copyFoldersAndFiles($source, $destination);
 
         } else {
             throw new \Exception("Already installed!!", 1);
@@ -82,115 +96,74 @@ class Install
 
         //
         //write router.js
-        $router_full_path = base_path().'/'.$resources_relative_path_name.'/js/router.js';
+        $router_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.js';
         
-        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/router.js.stub');
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/router.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         
-        file_put_contents($router_full_path, $stub);
+        $this->storage_disk->writeFile($router_full_path, $stub);
 
 
         //
         //write main_menu.js
-        $main_menu_full_path = base_path().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
+        $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
         
-        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         
-        file_put_contents($main_menu_full_path, $stub);
+        $this->storage_disk->writeFile($main_menu_full_path, $stub);
 
 
         //
         //write demo_sub_menu.js
-        $demo_sub_menu_full_path = base_path().'/'.$resources_relative_path_name.'/js/navigation/sub_menus/demo_sub_menu.js';
+        $demo_sub_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/sub_menus/demo_sub_menu.js';
         
-        $stub = file_get_contents(__DIR__.'/../../Stubs/resources/js/navigation/sub_menus/demo_sub_menu.js.stub');
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/sub_menus/demo_sub_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         
-        file_put_contents($demo_sub_menu_full_path, $stub);
+        $this->storage_disk->writeFile($demo_sub_menu_full_path, $stub);
         
 
         //
         //update env
-        $env_path = base_path().'/.env';
+        $env_path = $this->storage_disk->getBasePath().'/.env';
         
-        $lines = file($env_path); 
+        $lines = $this->storage_disk->readFileArray($env_path); 
         $lines []= "\n";
         $lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/public');
         $lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/public');
         $lines []= str_replace('{{MIX_STORAGE_URL}}', strtoupper($MIX_STORAGE_URL), "\n".'{{MIX_STORAGE_URL}}=/public/storage/app');
         
-        $fp = fopen($env_path, 'w'); 
-        fwrite($fp, implode('', $lines)); 
-        fclose($fp); 
+        $this->storage_disk->writeFileArray($env_path, $lines); 
         
 
         //
         //write spa controller
         $name = 'Spa';
 
-        $controller_path = base_path().'/app/Http/Controllers/'.ucfirst(strtolower($name)).'Controller.php';
+        $controller_path = $this->storage_disk->getBasePath().'/app/Http/Controllers/'.ucfirst(strtolower($name)).'Controller.php';
         
-        if (!file_exists($controller_path)) {
+        if (!$this->storage_disk->fileExists($controller_path)) {
 
-            $stub = file_get_contents(__DIR__.'/../../Stubs/Crud/Controller.stub');
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/Crud/Controller.stub');
 
             $stub = str_replace('{{td_entity}}', strtolower($name), $stub);
             $stub = str_replace('{{Td_entity}}', ucfirst(strtolower($name)), $stub);
             
-            file_put_contents($controller_path, $stub);
+            $this->storage_disk->writeFile($controller_path, $stub);
         }
 
 
         //
         //write resource routes file
-        $Vista_base_repository_path = base_path().'/routes/web.php';
+        $Vista_base_repository_path = $this->storage_disk->getBasePath().'/routes/web.php';
         $spa_get_urls = "\n".'Route::get(\'/{any}\', \'SpaController@index\')->where(\'any\', \'.*\');';
-        file_put_contents($Vista_base_repository_path, $spa_get_urls, FILE_APPEND);
-
-
-
-    }
-
-     /**
-     * Build the directory for the class if necessary.
-     *
-     * @param  string $path
-     * @return string
-     */
-    protected function makeDirectory($path)
-    {
-        if (!is_dir(dirname($path))) {
-            mkdir(dirname($path), 0777, true);
-        }
-    }
-    
-     /**
-     * Build directory structure from copying another.
-     *
-     * @param  string $path
-     * @return string
-     */
-    protected function copyFoldersAndFiles(string $source, string $destination)
-    {
-        if (!file_exists($destination)) {
-            mkdir($destination, 0755);
-        }
-        foreach (
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($source, \RecursiveDirectoryIterator::SKIP_DOTS),
-            \RecursiveIteratorIterator::SELF_FIRST) as $item
-        ) {
-            if ($item->isDir()) {
-                if (!file_exists( $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName() )) {
-                    mkdir($destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-                }
-            } else {
-                copy($item, $destination . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-            }
-        }
+        $this->storage_disk->writeFile($Vista_base_repository_path, $spa_get_urls, [
+            'append_file' => true
+        ]);
 
     }
+
 
 
 }

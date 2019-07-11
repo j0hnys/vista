@@ -13,11 +13,22 @@
         "mustache/mustache": "2.12.0",
         "doctrine/dbal": "2.9.1"
     },
+    "require-dev": {
+        "orchestra/testbench": "^3.8"
+    },
     "minimum-stability": "alpha",
     "autoload": {
         "psr-4": {
-            "j0hnys\\Vista\\": "./"
+            "j0hnys\\Vista\\": "./src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "j0hnys\\Vista\\Tests\\": "tests/"
+        },
+        "classmap": [
+            "tests/sandbox"
+        ]
     },
     "extra": {
         "laravel": {

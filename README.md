@@ -135,6 +135,18 @@ return [
 ];
 ```
 
+`MIX_BASE_*` are set in the `.env` file and follow the rules below
+ - `MIX_BASE_URL_FRONT_TEST`: link to index.php in public folder,
+ - `MIX_BASE_RELATIVE_URL_FRONT_TEST`: public uri if public link is in subfolder
+ - `MIX_STORAGE_URL_FRONT_TEST`: public link to storage
+
+e.x.
+```
+MIX_BASE_URL_TEST=http://localhost/laravel_test/public_test
+MIX_BASE_RELATIVE_URL_TEST=/laravel_test/public_test
+MIX_STORAGE_URL_TEST=http://localhost/laravel_test/public_test/storage/app
+```
+
 As said in the application architecture section more than one SPA's can be created
 
 After setting the configuration file execute:
@@ -167,6 +179,8 @@ mix.js('resources/js/app.js', 'public/js')
 mix.js('resources_front_test/js/app.js', 'public_front_test/js')
    .sass('resources_front_test/sass/app.scss', 'public_front_test/css');
 ```
+
+where `vista-framework` is the name of the folder that laravel is installed.
 
 # Available artisan commands
 

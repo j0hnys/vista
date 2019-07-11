@@ -18,10 +18,12 @@ class VistaServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $configPath = __DIR__.'/config/vista.php';
+        $configPath = __DIR__.'/../config/vista.php';
         $this->publishes([
             $configPath => config_path('vista.php'),
         ]);
+
+        $this->mergeConfigFrom($configPath, 'vista');
     }
 
     /**
