@@ -66,6 +66,7 @@ class CrudBuilder
         //
         //list delete generation
         $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_list_delete.js';
         
         if (!$this->storage_disk->fileExists($list_delete_path)) {
             $this->storage_disk->makeDirectory($list_delete_path);
@@ -84,9 +85,27 @@ class CrudBuilder
             $this->storage_disk->writeFile($list_delete_path, $stub);
         }
 
+        if (!$this->storage_disk->fileExists($list_delete_store_path)) {
+            $this->storage_disk->makeDirectory($list_delete_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+            
+            //MIX_BASE_RELATIVE_URL
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => $model_schema,
+            ]);
+
+            
+            $this->storage_disk->writeFile($list_delete_store_path, $stub);
+        }
+
         //
         //create generation
         $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
+        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_create.js';
         
         if (!$this->storage_disk->fileExists($create_path)) {
             $this->storage_disk->makeDirectory($create_path);
@@ -105,9 +124,25 @@ class CrudBuilder
             $this->storage_disk->writeFile($create_path, $stub);
         }
 
+        if (!$this->storage_disk->fileExists($create_store_path)) {
+            $this->storage_disk->makeDirectory($create_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => $model_schema,
+            ]);
+            
+            $this->storage_disk->writeFile($create_store_path, $stub);
+        }
+
         //
         //update generation
         $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
+        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
         
         if (!$this->storage_disk->fileExists($update_path)) {
             $this->storage_disk->makeDirectory($update_path);
@@ -124,6 +159,21 @@ class CrudBuilder
             ]);
             
             $this->storage_disk->writeFile($update_path, $stub);
+        }
+
+        if (!$this->storage_disk->fileExists($update_store_path)) {
+            $this->storage_disk->makeDirectory($update_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => $model_schema,
+            ]);
+            
+            $this->storage_disk->writeFile($update_store_path, $stub);
         }
         
 
@@ -159,6 +209,29 @@ class CrudBuilder
         $this->storage_disk->writeFile($router_path, $stub, [
             'append_file' => true,
         ]);
+
+        //
+        //update store
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
+
+        $stub = $this->mustache->render($stub, [
+            'page_modules' => [
+                [
+                    'module_name' => lcfirst($name).'_create',
+                ],
+                [
+                    'module_name' => lcfirst($name).'_list_delete',
+                ],
+                [
+                    'module_name' => lcfirst($name).'_update',
+                ],
+            ],
+        ]);
+        
+        $this->storage_disk->writeFile($store_path, $stub);
+
             
     }
 
@@ -340,7 +413,7 @@ class CrudBuilder
                 ],
                 "attributes" => [
                     "type" => ["checkbox" => true],
-                    "default_value" => '\'eat\'',
+                    "default_value" => '[\'eat\']',
                     "element_type" => false,
                 ],
                 "fields" => [

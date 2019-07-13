@@ -1,0 +1,24 @@
+var state = {
+    {{# component_data_properties }}
+    {{# attributes }}
+    {{property_name}}: {{property_value}},
+    {{/ attributes }}
+    {{/ component_data_properties }}
+};
+
+export default {
+    namespaced: true,
+    state: state,
+    mutations: {
+        setState (state, data) 
+        {
+            state = data;
+        },
+    },
+    getters: {
+        state (state) 
+        {
+            return state;
+        }
+    }
+};
