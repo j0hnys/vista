@@ -76,15 +76,17 @@ class Install
         if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/app.js')) {
             
             //resources folder 
-            $source = __DIR__.'/../../../scaffold_structure/resources';
-            $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'';
+            $source = __DIR__.'/../../../scaffold_structure/iView/resources';
+            $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/.';
+
+            
             $this->storage_disk->makeDirectory($destination);
             
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
             
             //public folder
-            $source = __DIR__.'/../../../scaffold_structure/public';
-            $destination = $this->storage_disk->getBasePath().'/'.$public_relative_path_name.'';
+            $source = __DIR__.'/../../../scaffold_structure/iView/public';
+            $destination = $this->storage_disk->getBasePath().'/'.$public_relative_path_name.'/.';
             $this->storage_disk->makeDirectory($destination);
 
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
