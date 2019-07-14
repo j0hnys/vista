@@ -51,12 +51,12 @@
             <Sider collapsible :collapsed-width="78" v-model="isCollapsed">
                 <h1 :style="{color: 'white', position: 'relative', top: '5px', left: '28px'}">{{menu_logo}}</h1>
                 <Menu ref="main_menu" @on-select="on_main_menu_item_clicked" :active-name="active_menu_name" theme="dark" width="auto" :class="menuitemClasses">
-                    <MenuItem v-for="menu_item in this.$store.getters['navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
+                    <MenuItem v-for="menu_item in this.$store.getters['components/BasicLayout/navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="!menu_item.children" :name="menu_item.name">
                         <Icon :type="menu_item.icon_type"></Icon>
                         <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white', width: '80%'}">{{menu_item.text}}</span></router-link>
                     </MenuItem>
 
-                    <Submenu v-for="menu_item in this.$store.getters['navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
+                    <Submenu v-for="menu_item in this.$store.getters['components/BasicLayout/navigation']()['main_menu']" v-bind:data="menu_item" v-bind:key="menu_item.name" v-if="menu_item.children" :name="menu_item.name">
                         <template slot="title">
                             <Icon :type="menu_item.icon_type"></Icon>
                             <router-link :to="menu_item.redirect_url"><span v-if="!isCollapsed" :style="{color: 'white', width: '65%'}">{{menu_item.text}}</span></router-link>
@@ -192,7 +192,7 @@
 
                 var indexes = menu_name.split('-');
 
-                var main_menu = this.$store.getters['navigation']()['main_menu'];
+                var main_menu = this.$store.getters['components/BasicLayout/navigation']()['main_menu'];
                 var current_menu_level = main_menu;
 
                 this.main_menu_breadcrumb = [];
@@ -244,7 +244,7 @@
             //     'this.$store.state.BasicLayout.menu_items': this.$store.state.BasicLayout.menu_items,
             // });
 
-            var navigation = this.$store.getters['navigation']();
+            var navigation = this.$store.getters['components/BasicLayout/navigation']();
 
             var current_menu = navigation.main_menu[0];
 

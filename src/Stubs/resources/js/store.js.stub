@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import MainMenu from './navigation/main_menu/main_menu.js';
 import Index from './store/pages/Index.js';
 import BasicLayout from './store/components/BasicLayout.js';
 {{# page_modules }}
@@ -18,9 +17,6 @@ const store = new Vuex.Store({
         base_url: process.env.MIX_BASE_URL+'/',
         base_relative_url: process.env.MIX_BASE_RELATIVE_URL+'/',
         storage_url: process.env.MIX_STORAGE_URL+'/',
-        navigation: {
-            main_menu: MainMenu,
-        }
     },
     modules: {
         components: {
@@ -37,13 +33,7 @@ const store = new Vuex.Store({
                 {{module_name}}: {{module_name}},
                 {{/ page_modules }}
             }
-        }
-    },
-    getters: {
-        navigation: (state) => (data) => {
-            // console.log(data);
-            return state.navigation;
-        }
+        },
     },
 });
 
