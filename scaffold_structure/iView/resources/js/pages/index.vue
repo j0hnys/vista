@@ -67,7 +67,7 @@
             }
         },
         mounted() {
-            // console.log('index mounted');
+            // console.log('index mounted');  
             // console.log({
             //     // 'this.$store': this.$store,
             //     'this.$store.state': this.$store.state,
