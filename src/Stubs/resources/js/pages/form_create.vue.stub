@@ -181,7 +181,7 @@
                             }
                         }
 
-                        window.axios.post( process.env.{{MIX_BASE_RELATIVE_URL}}+'/trident/resource/{{vst_entity}}',  form_data ).then((response) => {
+                        window.axios.post( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_create_post}}',  form_data ).then((response) => {
                             // Once AJAX resolves we can update the Crud with the new color
                             self.$Message.success('Success!');
                         }).catch(error => {
