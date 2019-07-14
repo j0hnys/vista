@@ -48,28 +48,25 @@
 <script>
     export default {
         data() {
-            //
-            //app state registration
-            this.$store.registerModule(['pages','{{Vst_entity}}_list_delete'], {
-                namespaced: true,
-                state: {
-                    test_parameter: '',
+            var state = {
+                formValidate: {
+                    {{# form_data_parameters }}
+                    {{# attributes }}
+                    {{column_name}}: {{default_value}},
+                    {{/ attributes }}
+                    {{/ form_data_parameters }}
                 },
-                mutations: {    //must be synchronous!! ta "actions" einai workflows praktika!!
-                    set_test_parameter (state, name) {
-                        state.test_parameter = name;
-                    },
-                },
-            });
-
+            };
+            if (this.$store.state.pages.{{vst_entity}}_list_delete) 
+            {
+                state = this.$store.state.pages.{{vst_entity}}_list_delete;
+            }
 
 
             //
             //component state registration
             return {
-                local_parameter: 'local',
-
-
+                ...state,
                 columns: [
                     {{# table_columns }}
                     {
@@ -120,6 +117,15 @@
 
 
             };
+        },
+        watch: {
+            formValidate: {
+                deep: true,
+                handler(value) 
+                {
+                    this.$store.commit('pages/{{vst_entity}}_list_delete/setFormValidate', value);
+                }
+            }
         },
         methods: {
             ajax() {
