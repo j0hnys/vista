@@ -103,7 +103,7 @@
                 </Header>
                 <Content :style="{padding: '0 16px 16px'}">
                     <Breadcrumb :style="{margin: '16px 0'}">
-                        <BreadcrumbItem v-for="breadcrumb in this.$store.state.BasicLayout.breadcrumbs" v-bind:data="breadcrumb" v-bind:key="breadcrumb.text">{{breadcrumb.text}}</BreadcrumbItem>
+                        <BreadcrumbItem v-for="breadcrumb in this.$store.state.components.BasicLayout.breadcrumbs" v-bind:data="breadcrumb" v-bind:key="breadcrumb.text">{{breadcrumb.text}}</BreadcrumbItem>
                     </Breadcrumb>
                     <Menu ref="sub_menu" @on-select="on_sub_menu_item_clicked" mode="horizontal" theme="light" active-name="1" v-if="submenu">
 
@@ -139,29 +139,19 @@
 <script>
     export default {
         data () {
-            //
-            //app state registration
-            this.$store.registerModule('BasicLayout', {
-                namespaced: true,
-                state: {
-                    breadcrumbs: [],
-                },
-                mutations: {    //must be synchronous!! ta "actions" einai workflows praktika!!
-                    set_breadcrumbs (state, data) {
-                        state.breadcrumbs = data;
-                    },
-                },
-                getters: {
-                    breadcrumbs: (state) => {
-                        // console.log(data);
-                        return state.breadcrumbs;
-                    }
-                },
-            });
+            var state = {
+                breadcrumbs: [],
+            };
+            if (this.$store.state.components.BasicLayout) 
+            {
+                state = this.$store.state.components.BasicLayout;
+            }
 
             //
             //component state registration
             return {
+                ...state,
+
                 isCollapsed: false,
                 submenu: this.$route.meta.submenu,
 
@@ -217,7 +207,7 @@
 
                 this.page_title = current_menu_level[ indexes[indexes.length-1]-1 ].text;
 
-                this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb);
+                this.$store.commit('components/BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb);
 
             },
             on_sub_menu_item_clicked(menu_name) {
@@ -243,7 +233,7 @@
 
                 this.page_title = current_menu_level[ indexes[indexes.length-1]-1 ].text;
 
-                this.$store.commit('BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb.concat(this.sub_menu_breadcrumb));
+                this.$store.commit('components/BasicLayout/set_breadcrumbs',this.main_menu_breadcrumb.concat(this.sub_menu_breadcrumb));
 
             },
         },
@@ -270,7 +260,7 @@
             }
             this.page_title = current_menu.text;
 
-            this.$store.commit('BasicLayout/set_breadcrumbs',[
+            this.$store.commit('components/BasicLayout/set_breadcrumbs',[
                 {
                     text: current_menu.text    //<-- einai k t arxiko active...
                 }

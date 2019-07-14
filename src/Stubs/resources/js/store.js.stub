@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import MainMenu from './navigation/main_menu/main_menu.js';
 import Index from './store/pages/Index.js';
+import BasicLayout from './store/components/BasicLayout.js';
 {{# page_modules }}
 import {{module_name}} from './store/pages/{{module_name}}.js';
 {{/ page_modules }}
@@ -22,6 +23,12 @@ const store = new Vuex.Store({
         }
     },
     modules: {
+        components: {
+            namespaced: true,
+            modules: {
+                BasicLayout: BasicLayout,
+            }
+        },
         pages: {
             namespaced: true,
             modules: {
