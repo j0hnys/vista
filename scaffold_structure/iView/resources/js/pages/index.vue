@@ -24,6 +24,7 @@
         height: 100%;
     }
 </style>
+
 <template>
     <div class="index">
         <Row type="flex" justify="center" align="middle">
@@ -42,7 +43,11 @@
         </Row>
     </div>
 </template>
+
 <script>
+    import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from 'hello-type'
+    import TypeChecker from '../types/TypeChecker.js';
+
     export default {
         data() {
             var state = {
@@ -57,6 +62,14 @@
             return {
                 ...state,
             };
+        },
+        types: {
+            namespace: 'test/test/test',
+            schema() {
+                return new Type({
+                    variable: String,
+                });
+            }
         },
         methods: {
             handleStart () {
@@ -73,6 +86,22 @@
             //     'this.$store.state': this.$store.state,
             //     'this.$store.state.pages.Index': this.$store.state.pages.Index,
             // });
+
+            TypeChecker.checkNamespace('ena/dyo/tria',{
+                name: '1',
+                age: 11,
+                nested: [
+                    {
+                        parameter_one: 1,
+                        parameter_two: 1,
+                    },
+                    {
+                        parameter_one: 1,
+                        parameter_two: 1,
+                    },
+                ],
+            });
+
         },
     }
 </script>
