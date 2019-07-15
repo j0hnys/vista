@@ -9,4 +9,4 @@
 // //^^^
 
 //pages
-exports.demo_sub_menu = require("./navigation/sub_menus/demo_sub_menu.js");
+exports.demo_sub_menu = require("./navigation/sub_menus/demo_sub_menu.js").default;
