@@ -77,15 +77,16 @@
                     title: 'Bravo',
                     content: 'Now, enjoy the convenience of iView.'
                 });
+
+                this.$global_events.$emit('pages/Index/test','emited string');
+
             }
         },
         mounted() {
-            // console.log('index mounted');  
-            // console.log({
-            //     // 'this.$store': this.$store,
-            //     'this.$store.state': this.$store.state,
-            //     'this.$store.state.pages.Index': this.$store.state.pages.Index,
-            // });
+            this.$global_events.$on('pages/Index/test',(data) => {
+                console.log('pages/Index/test global event fired with data: "'+data+'"');    
+            });
+
 
             TypeChecker.checkNamespace('ena/dyo/tria',{
                 name: '1',
