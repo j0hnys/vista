@@ -1,8 +1,6 @@
 # vista
 A laravel UI generator using iview, vue
 
-this package is alpha software at the moment
-
 # Introduction
 
 The purpose of this package is to generate a web UI for a laravel application using laravel's models, migrations and validations (Form Request Validation).
@@ -37,24 +35,35 @@ The package on install creates among others the following folder structure
             |- sub_menus
                 |->demo_sub_menus.js
         |- pages
-            |->index.vuu
+            |->index.vue
+        |- store
+            |- components
+                |->BasicLayout.js
+            |- pages
+                |->Index.js
+        |- types
+            |- schemas
+            |->TypeChecker.js
+            |->TypedComponentData.js
         |->app.js
         |->app.vue
         |->bootstrap.js
         |->router.js
         |->router.pages.js
         |->router.submenus.js
+        |->store.js
     |- sass
     |- views
         |->iview.blade.php
 ```
-Where `|* public_*` and `|* resources_*` are the SPA's directories in the root folder of a laravel application.
+Where `|* public_*` and `|* resources_*` are the SPA's directories in the root folder of a laravel application. Every component or page has it's dedicated storage. Vue component data can be type checked as can all other inputs, more details are seen in Strict Types section below.
 
 This package supports multiple SPA's from one laravel instance. For example we could have a pair `|* public_front_end`, `|* resources_front_end` and `|* public_back_end`, `|* resources_back_end` that work in parallel with the same controllers, models, e.t.c. just by configuring webpack.mix.js accordingly. This is described in more detail at the installation section below.
 
 The general workflow for adding a new page follows the following pattern:
 
 - creating a vue component in the `pages` folder
+- updating the `router.pages.js` with this new vue component
 - updating the `router.js` with this new vue component
 - updating the `main_menu.js` in order to have a visual route to the new page
 
@@ -103,7 +112,8 @@ add
     "iview-loader": "*",
     "vue": "^2.5.16",
     "vuex": "^3.0.1",
-    "vue-router": "^2.8.1"
+    "vue-router": "^2.8.1",
+    "hello-type": "2.24.5"
 }
 ```
 to laravel's `package.json` and then execute `npm install`
@@ -142,9 +152,9 @@ return [
 
 e.x.
 ```
-MIX_BASE_URL_TEST=http://localhost/laravel_test/public_test
-MIX_BASE_RELATIVE_URL_TEST=/laravel_test/public_test
-MIX_STORAGE_URL_TEST=http://localhost/laravel_test/public_test/storage/app
+MIX_BASE_URL_TEST=http://localhost/laravel_test/public_front_test
+MIX_BASE_RELATIVE_URL_TEST=/laravel_test/public_front_test
+MIX_STORAGE_URL_TEST=http://localhost/laravel_test/public_front_test/storage/app
 ```
 
 As said in the application architecture section more than one SPA's can be created
@@ -184,11 +194,11 @@ where `vista-framework` is the name of the folder that laravel is installed.
 
 # Available artisan commands
 
-| Command | Description |
-|---|---|
-vista:export:model  | export a model's schema
-vista:generate:crud | Create a Spa CRUD
-vista:install       | Vista installer
+| Command | Description | Parameters
+|---|---|---|
+vista:export:model  | export a model's schema | {entity_name} {entity_namespace}
+vista:generate:crud | Create a Spa CRUD       | {name} {--schema_path=} {--resources_relative_path_name=}
+vista:install       | Vista installer         | {resources_relative_path_name?}
 
 # Basic usage
 
@@ -201,20 +211,132 @@ First we need to export the data to a json file using the following artisan comm
 php artisan vista:export:model test_model
 ```
 
-where `test_model` is the name of a laravel model located at `app` folder.
+where `test_model` is the name of a laravel model located at `app` folder. After that we can edit the exported schema accordingly, like change the default generated endpoints
 
 Than execute:
 ```
-php artisan vista:generate:crud test_tt 'app/Models/Schemas/Exports/test_model.json' resources_front_test
+php artisan vista:generate:crud DemoPage 'app/Models/Schemas/Exports/test_model.json' resources_front_test
 ```
 
 where the first parameter is the prefix of the pages, the next parameter is the exported model and the last is the SPA that the pages are going to be placed.
 
 After completing this process the following changes have taken place:
 
-- A new set of pages will be created at `pages` folder (`test_tt_list_delete.vue`, `test_tt_list_delete.vue`, `test_tt_update.vue`)  
+- A new set of pages will be created at `pages` folder (`DemoPage_list_delete.vue`, `DemoPage_list_delete.vue`, `DemoPage_update.vue`)  
 - the `router.js` will be automatically updated with the routes for the new pages
 
-It is noted once again that a resource named `test_tt` should exist in laravel with url `/trident/resource/test_tt`.
+It is noted once again that a resource named `DemoPage` should exist in laravel with url `/trident/resource/DemoPage`.
 
-Menu placement is left to the developer. It is done by modifying `main_menu.js` or sub_menus accordingly,
+Menu placement is left to the developer. It is done by modifying `main_menu.js` or sub_menus accordingly.
+
+
+## Strict Types
+
+In order to make functionality more descriptive a type system have been implemented in the vue project. The main purpose is to define the structures of all data that run through the application, from function parameters to Vue component data. The concept has similarities to Data Tranfer Objects (DTO's) but the main mechanism that the structure is "forced" is through validation of the data to be examined. 
+
+Let's say for example that we have the following definition (must be in `./types/schemas` folder):
+
+```js
+import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from 'hello-type'
+
+const PersonInfo = new Type({
+    firstname: String,
+    lastname: String
+});
+
+
+export default {
+    namespace: 'test/test/test',
+    assert(data) {
+        PersonInfo.assert(data);
+    },
+};
+```
+
+we can use this definition to validate the vue components `data()` Object API property or in any other situation. An example component is shown below:
+
+```vue
+<template>
+    <div>
+        firstname: {{firstname}}
+        lastname: {{lastname}}
+    </div>
+</template>
+
+<script>
+    import TypeChecker from '../types/TypeChecker.js';
+
+    export default {
+        data() {
+            return {
+                firstname: 'John',
+                lastname: 'John',
+            };
+        },
+        types: {
+            namespace: 'test/test/test',
+        },
+        mounted() {
+
+            TypeChecker.checkNamespace('test/test/test',{
+                firstname: '1',
+                lastname: 11,
+            });
+
+        },
+    }
+</script>
+```
+
+Using the `types` top level component property we can check that the `data()` follow the spec that is defined above. We can check this structure anywhere using the TypeChecker's `checkNamespace` function. In that way we can type check any function's paremeters. e.x. snippet
+```js
+methods: {
+    someFunction(data) {
+        TypeChecker.checkNamespace('test/test/test', data);
+    },
+}        
+```
+
+If the data that are passed to the type checker do not much the specification an error will be thrown describing the issue. For performance reasons all the type checks and definitions are excluded from the production build if we use exclusively type namespaces as demonstrated above.
+
+
+## Global events
+
+Vue has a custom events system in place, which for most cases is fine. There are scenarios when we would like to have more control on custom events, some of those scenarios are:
+ 
+ - Emit and listen to events that are not part of the vue app. This is case is more common when integrating vue with existing front-end application
+ - Organize event listeners in a more flexible way (remove event listening hook from the template, like when using `v-on`) which is more apparent when applications start to get bigger. 
+
+For this reason a `$global_events` property has been implemented in the base Vue Object. Using global events we could register and fire events like in the snipper below:
+```vue
+<template>
+    <div>
+        <button @click="onButtonClicked"> CLICK ME </button>
+    </div>
+</template>
+
+<script>
+    export default {
+        data() {
+            return {
+                firstname: 'John',
+                lastname: 'John',
+            };
+        },
+        methods: {
+            onButtonClicked() {
+                this.$global_events.$emit('pages/Index/test','emited string');
+            },
+        }
+        mounted() {
+            this.$global_events.$on('pages/Index/test',(data) => {
+                console.log('pages/Index/test global event fired with data: "'+data+'"');    
+            });
+            
+
+        },
+    }
+</script>
+```
+
+The added benefit here is that event naming can follow the **namespacing convention** that `vuex` follows 

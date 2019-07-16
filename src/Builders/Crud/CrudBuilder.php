@@ -263,6 +263,7 @@ class CrudBuilder
                 ],
             ],
             'presentation' => [
+                'type' => 'form',
                 'schema' => [
                     [
                         "column_name" => "string_parameter",

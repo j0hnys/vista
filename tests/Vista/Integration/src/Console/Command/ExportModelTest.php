@@ -26,6 +26,9 @@ class ExportModelTest extends TestCase
         $stub = $this->storage_disk->readFile($this->base_path.'/../Stubs/.env');
         $this->storage_disk->writeFile($this->base_path.'/.env', $stub);
 
+        $stub = $this->storage_disk->readFile($this->base_path.'/../Stubs/routes/web.php');
+        $this->storage_disk->writeFile($this->base_path.'/routes/web.php', $stub);
+
         $this->install->run();
 
         //export model
