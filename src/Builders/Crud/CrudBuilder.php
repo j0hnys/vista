@@ -59,13 +59,14 @@ class CrudBuilder
             $model_schema = $this->storage_disk->readFile($this->storage_disk->getBasePath().$model_schema_relative_fullpath);
             $model_schema = json_decode($model_schema,true);
         } else {
-            $model_schema = $this->defaultSchema();
+            $model_schema = $this->defaultSchema( lcfirst($name) );
         }
 
 
         //
         //list delete generation
         $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_list_delete.js';
         
         if (!$this->storage_disk->fileExists($list_delete_path)) {
             $this->storage_disk->makeDirectory($list_delete_path);
@@ -77,16 +78,36 @@ class CrudBuilder
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
             $stub = $this->mustache->render($stub, [
-                'table_columns' => $model_schema,
+                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
+                'ajax_delete_delete' => $model_schema['ajax']['delete']['DELETE'],
+                'table_columns' => $model_schema['presentation']['schema'],
             ]);
 
             
             $this->storage_disk->writeFile($list_delete_path, $stub);
         }
 
+        if (!$this->storage_disk->fileExists($list_delete_store_path)) {
+            $this->storage_disk->makeDirectory($list_delete_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+            
+            //MIX_BASE_RELATIVE_URL
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => [],
+            ]);
+
+            
+            $this->storage_disk->writeFile($list_delete_store_path, $stub);
+        }
+
         //
         //create generation
         $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
+        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_create.js';
         
         if (!$this->storage_disk->fileExists($create_path)) {
             $this->storage_disk->makeDirectory($create_path);
@@ -97,17 +118,34 @@ class CrudBuilder
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
             $stub = $this->mustache->render($stub, [
-                'form_elements' => $model_schema,
-                'form_data_parameters' => $model_schema,
-                'validation_rules' => $model_schema,
+                'ajax_create_post' => $model_schema['ajax']['create']['POST'],
+                'form_elements' => $model_schema['presentation']['schema'],
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+                'validation_rules' => $model_schema['presentation']['schema'],
             ]);
             
             $this->storage_disk->writeFile($create_path, $stub);
         }
 
+        if (!$this->storage_disk->fileExists($create_store_path)) {
+            $this->storage_disk->makeDirectory($create_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+            ]);
+            
+            $this->storage_disk->writeFile($create_store_path, $stub);
+        }
+
         //
         //update generation
         $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
+        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
         
         if (!$this->storage_disk->fileExists($update_path)) {
             $this->storage_disk->makeDirectory($update_path);
@@ -118,12 +156,29 @@ class CrudBuilder
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
             $stub = $this->mustache->render($stub, [
-                'form_elements' => $model_schema,
-                'form_data_parameters' => $model_schema,
-                'validation_rules' => $model_schema,
+                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
+                'ajax_update_post' => $model_schema['ajax']['update']['POST'],
+                'form_elements' => $model_schema['presentation']['schema'],
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+                'validation_rules' => $model_schema['presentation']['schema'],
             ]);
             
             $this->storage_disk->writeFile($update_path, $stub);
+        }
+
+        if (!$this->storage_disk->fileExists($update_store_path)) {
+            $this->storage_disk->makeDirectory($update_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
+
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+            ]);
+            
+            $this->storage_disk->writeFile($update_store_path, $stub);
         }
         
 
@@ -159,6 +214,29 @@ class CrudBuilder
         $this->storage_disk->writeFile($router_path, $stub, [
             'append_file' => true,
         ]);
+
+        //
+        //update store
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
+
+        $stub = $this->mustache->render($stub, [
+            'page_modules' => [
+                [
+                    'module_name' => lcfirst($name).'_create',
+                ],
+                [
+                    'module_name' => lcfirst($name).'_list_delete',
+                ],
+                [
+                    'module_name' => lcfirst($name).'_update',
+                ],
+            ],
+        ]);
+        
+        $this->storage_disk->writeFile($store_path, $stub);
+
             
     }
 
@@ -167,217 +245,236 @@ class CrudBuilder
      *
      * @return array
      */
-    public function defaultSchema()
+    public function defaultSchema(string $vst_entity)
     {
         return [
-            [
-                "column_name" => "string_parameter",
-                "column_type" => "string",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "string",
-                        "trigger" => "blur",
-                    ]
+            'ajax' => [
+                'get' => [
+                    'GET' => '/trident/resource/'.$vst_entity
                 ],
-                "attributes" => [
-                    "type" => ["string" => true],
-                    "default_value" => '\'\'',
-                    "element_type" => false,
+                'create' => [
+                    'POST' => '/trident/resource/'.$vst_entity
+                ],
+                'update' => [
+                    'POST' => '/trident/resource/'.$vst_entity
+                ],
+                'delete' => [
+                    'DELETE' => '/trident/resource/'.$vst_entity
+                ],
+            ],
+            'presentation' => [
+                'type' => 'form',
+                'schema' => [
+                    [
+                        "column_name" => "string_parameter",
+                        "column_type" => "string",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "string",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["string" => true],
+                            "default_value" => '\'\'',
+                            "element_type" => false,
+                        ]
+                    ],
+                    [
+                        "column_name" => "integer_parameter",
+                        "column_type" => "integer",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "number",
+                                "max" => 30,
+                                "min" => 0,
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["number" => true],
+                            "default_value" => '0',
+                            "element_type" => false,
+                        ]
+                    ],
+                    [
+                        "column_name" => "boolean_parameter",
+                        "column_type" => "boolean",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "boolean",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["switch" => true],
+                            "default_value" => 'true',
+                            "element_type" => false,
+                        ],
+                        "fields" => [
+                            [
+                                "name" => "open", 
+                                "text" => "on", 
+                                "value" => "on", 
+                            ],
+                            [
+                                "name" => "close", 
+                                "text" => "off", 
+                                "value" => "off", 
+                            ],
+                        ],
+                    ],
+                    [
+                        "column_name" => "date_parameter",
+                        "column_type" => "date",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "date",
+                                "from" => "2018-12-12 00:00:00",
+                                "to" => "2018-12-22 00:00:00",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["date" => true],
+                            "default_value" => '\'\'',
+                            "element_type" => 'datetime',
+                        ],
+                    ],
+                    [
+                        "column_name" => "text_parameter",
+                        "column_type" => "string",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "text",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["text" => true],
+                            "default_value" => '\'\'',
+                            "element_type" => 'textarea',
+                        ]
+                    ],
+                    [
+                        "column_name" => "range_parameter",
+                        "column_type" => "float",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "number",
+                                "max" => 30,
+                                "min" => 0,
+                                "trigger" => "blur",
+                            ],
+                        ],
+                        "attributes" => [
+                            "type" => ["slider" => true],
+                            "default_value" => '[5,15]',
+                            "element_type" => false,
+                            "precision" => 2,
+                        ]
+                    ],
+                    [
+                        "column_name" => "radio_parameter",
+                        "column_type" => "string",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "radio",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["radio" => true],
+                            "default_value" => '\'eat\'',
+                            "element_type" => false,
+                        ],
+                        "fields" => [
+                            [
+                                "name" => "eat", 
+                                "text" => "Eat", 
+                                "value" => "Eat", 
+                            ],
+                            [
+                                "name" => "sleep", 
+                                "text" => "Sleep", 
+                                "value" => "Sleep", 
+                            ],
+                            [
+                                "name" => "repeat",
+                                "text" => "Repeat",
+                                "value" => "Repeat",
+                            ],
+                        ],
+                    ],
+                    [
+                        "column_name" => "checkbox_parameter",
+                        "column_type" => "string",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "checkbox",
+                                "max" => 2,
+                                "min" => 1,
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["checkbox" => true],
+                            "default_value" => '[\'eat\']',
+                            "element_type" => false,
+                        ],
+                        "fields" => [
+                            [
+                                "name" => "eat", 
+                                "text" => "Eat", 
+                                "value" => "Eat", 
+                            ],
+                            [
+                                "name" => "sleep", 
+                                "text" => "Sleep", 
+                                "value" => "Sleep", 
+                            ],
+                            [
+                                "name" => "repeat",
+                                "text" => "Repeat",
+                                "value" => "Repeat",
+                            ],
+                        ],
+                    ],
+                    [
+                        "column_name" => "file_parameter",
+                        "column_type" => "string",
+                        "type" => "fillable",
+                        "validation_rules" => [
+                            [
+                                "required" => true,
+                                "type" => "file",
+                                "trigger" => "blur",
+                            ]
+                        ],
+                        "attributes" => [
+                            "type" => ["file" => true],
+                            "default_value" => 'null',
+                            "element_type" => false,
+                        ]
+                    ],
                 ]
-            ],
-            [
-                "column_name" => "integer_parameter",
-                "column_type" => "integer",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "number",
-                        "max" => 30,
-                        "min" => 0,
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["number" => true],
-                    "default_value" => '0',
-                    "element_type" => false,
-                ]
-            ],
-            [
-                "column_name" => "boolean_parameter",
-                "column_type" => "boolean",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "boolean",
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["switch" => true],
-                    "default_value" => 'true',
-                    "element_type" => false,
-                ],
-                "fields" => [
-                    [
-                        "name" => "open", 
-                        "text" => "on", 
-                        "value" => "on", 
-                    ],
-                    [
-                        "name" => "close", 
-                        "text" => "off", 
-                        "value" => "off", 
-                    ],
-                ],
-            ],
-            [
-                "column_name" => "date_parameter",
-                "column_type" => "date",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "date",
-                        "from" => "2018-12-12 00:00:00",
-                        "to" => "2018-12-22 00:00:00",
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["date" => true],
-                    "default_value" => '\'\'',
-                    "element_type" => 'datetime',
-                ],
-            ],
-            [
-                "column_name" => "text_parameter",
-                "column_type" => "string",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "text",
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["text" => true],
-                    "default_value" => '\'\'',
-                    "element_type" => 'textarea',
-                ]
-            ],
-            [
-                "column_name" => "range_parameter",
-                "column_type" => "float",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "number",
-                        "max" => 30,
-                        "min" => 0,
-                        "trigger" => "blur",
-                    ],
-                ],
-                "attributes" => [
-                    "type" => ["slider" => true],
-                    "default_value" => '[5,15]',
-                    "element_type" => false,
-                    "precision" => 2,
-                ]
-            ],
-            [
-                "column_name" => "radio_parameter",
-                "column_type" => "string",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "radio",
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["radio" => true],
-                    "default_value" => '\'eat\'',
-                    "element_type" => false,
-                ],
-                "fields" => [
-                    [
-                        "name" => "eat", 
-                        "text" => "Eat", 
-                        "value" => "Eat", 
-                    ],
-                    [
-                        "name" => "sleep", 
-                        "text" => "Sleep", 
-                        "value" => "Sleep", 
-                    ],
-                    [
-                        "name" => "repeat",
-                        "text" => "Repeat",
-                        "value" => "Repeat",
-                    ],
-                ],
-            ],
-            [
-                "column_name" => "checkbox_parameter",
-                "column_type" => "string",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "checkbox",
-                        "max" => 2,
-                        "min" => 1,
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["checkbox" => true],
-                    "default_value" => '\'eat\'',
-                    "element_type" => false,
-                ],
-                "fields" => [
-                    [
-                        "name" => "eat", 
-                        "text" => "Eat", 
-                        "value" => "Eat", 
-                    ],
-                    [
-                        "name" => "sleep", 
-                        "text" => "Sleep", 
-                        "value" => "Sleep", 
-                    ],
-                    [
-                        "name" => "repeat",
-                        "text" => "Repeat",
-                        "value" => "Repeat",
-                    ],
-                ],
-            ],
-            [
-                "column_name" => "file_parameter",
-                "column_type" => "string",
-                "type" => "fillable",
-                "validation_rules" => [
-                    [
-                        "required" => true,
-                        "type" => "file",
-                        "trigger" => "blur",
-                    ]
-                ],
-                "attributes" => [
-                    "type" => ["file" => true],
-                    "default_value" => 'null',
-                    "element_type" => false,
-                ]
-            ],
+            ]
         ];
     }
 

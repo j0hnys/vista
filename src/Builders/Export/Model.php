@@ -40,12 +40,33 @@ class Model
             $tmp []= $this->schemaItem($db_table_fillable, \Schema::getColumnType($db_table_name, $db_table_fillable));
         }
 
+        $schema = [
+            'ajax' => [
+                'get' => [
+                    'GET' => '/trident/resource/'.$td_entity_name
+                ],
+                'create' => [
+                    'POST' => '/trident/resource/'.$td_entity_name
+                ],
+                'update' => [
+                    'POST' => '/trident/resource/'.$td_entity_name
+                ],
+                'delete' => [
+                    'DELETE' => '/trident/resource/'.$td_entity_name
+                ],
+            ],
+            'presentation' => [
+                'type' => 'form',
+                'schema' => $tmp
+            ]
+        ];
+
         //
         //export
         $schema_export_path = $this->storage_disk->getBasePath().'/app/Models/Schemas/Exports/'.$td_entity_name.'.json';
         $this->storage_disk->makeDirectory($schema_export_path);
 
-        $this->storage_disk->writeFile($schema_export_path, json_encode($tmp,JSON_PRETTY_PRINT));        
+        $this->storage_disk->writeFile($schema_export_path, json_encode($schema,JSON_PRETTY_PRINT));        
 
     }
     

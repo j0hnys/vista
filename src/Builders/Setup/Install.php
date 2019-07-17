@@ -76,15 +76,17 @@ class Install
         if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/app.js')) {
             
             //resources folder 
-            $source = __DIR__.'/../../../scaffold_structure/resources';
-            $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'';
+            $source = __DIR__.'/../../../scaffold_structure/iView/resources';
+            $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/.';
+
+            
             $this->storage_disk->makeDirectory($destination);
             
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
             
             //public folder
-            $source = __DIR__.'/../../../scaffold_structure/public';
-            $destination = $this->storage_disk->getBasePath().'/'.$public_relative_path_name.'';
+            $source = __DIR__.'/../../../scaffold_structure/iView/public';
+            $destination = $this->storage_disk->getBasePath().'/'.$public_relative_path_name.'/.';
             $this->storage_disk->makeDirectory($destination);
 
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
@@ -129,13 +131,40 @@ class Install
         $env_path = $this->storage_disk->getBasePath().'/.env';
         
         $lines = $this->storage_disk->readFileArray($env_path); 
-        $lines []= "\n";
-        $lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/public');
-        $lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/public');
-        $lines []= str_replace('{{MIX_STORAGE_URL}}', strtoupper($MIX_STORAGE_URL), "\n".'{{MIX_STORAGE_URL}}=/public/storage/app');
-        
+        $new_lines = [];
+        $add_new_lines = [
+            'MIX_BASE_URL' => true,
+            'MIX_BASE_RELATIVE_URL' => true,
+            'MIX_STORAGE_URL' => true,
+        ];
+        foreach ($lines as $line) {
+            if (strpos($line, strtoupper($MIX_BASE_URL)) === 0) {
+                $add_new_lines['MIX_BASE_URL'] = false;
+            }
+            if (strpos($line, strtoupper($MIX_BASE_RELATIVE_URL)) === 0) {
+                $add_new_lines['MIX_BASE_RELATIVE_URL'] = false;
+            }
+            if (strpos($line, strtoupper($MIX_STORAGE_URL)) === 0) {
+                $add_new_lines['MIX_STORAGE_URL'] = false;
+            }
+        }
+        if ($add_new_lines['MIX_BASE_URL'] == true) {
+            $new_lines []= "\n";
+            $new_lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/public');
+        }
+        if ($add_new_lines['MIX_BASE_RELATIVE_URL'] == true) {
+            $new_lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/public');
+        }
+        if ($add_new_lines['MIX_STORAGE_URL'] == true) {
+            $new_lines []= str_replace('{{MIX_STORAGE_URL}}', strtoupper($MIX_STORAGE_URL), "\n".'{{MIX_STORAGE_URL}}=/public/storage/app');
+        }
+
+        if (!empty($new_lines)) {
+            $lines = array_merge($lines, $new_lines);
+        }
+
         $this->storage_disk->writeFileArray($env_path, $lines); 
-        
+
 
         //
         //write spa controller
@@ -156,11 +185,29 @@ class Install
 
         //
         //write resource routes file
-        $Vista_base_repository_path = $this->storage_disk->getBasePath().'/routes/web.php';
-        $spa_get_urls = "\n".'Route::get(\'/{any}\', \'SpaController@index\')->where(\'any\', \'.*\');';
-        $this->storage_disk->writeFile($Vista_base_repository_path, $spa_get_urls, [
+        $Vista_resource_routes_path = $this->storage_disk->getBasePath().'/routes/web.php';
+        $resource_routes_file_contents = $this->storage_disk->readFile( $Vista_resource_routes_path );
+        $spa_get_urls = '';
+        if (strpos($resource_routes_file_contents, 'SpaController@index') === false) {
+            $spa_get_urls = "\n".'Route::get(\'/{any}\', \'SpaController@index\')->where(\'any\', \'.*\');';
+        }
+        $this->storage_disk->writeFile($Vista_resource_routes_path, $spa_get_urls, [
             'append_file' => true
         ]);
+
+
+        //
+        //update store
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
+
+        $stub = $this->mustache->render($stub, [
+            'page_modules' => [],
+        ]);
+        
+        $this->storage_disk->writeFile($store_path, $stub);
+
 
     }
 

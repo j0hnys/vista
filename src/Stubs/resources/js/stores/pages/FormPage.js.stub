@@ -1,0 +1,26 @@
+var state = {
+    formValidate: {
+        {{# form_data_parameters }}
+        {{# attributes }}
+        {{column_name}}: {{default_value}},
+        {{/ attributes }}
+        {{/ form_data_parameters }}
+    },
+};
+
+export default {
+    namespaced: true,
+    state: state,
+    mutations: {
+        setFormValidate (state, data) 
+        {
+            state.formValidate = data;
+        },
+    },
+    getters: {
+        formValidate (state) 
+        {
+            return state.formValidate;
+        }
+    }
+};
