@@ -70,8 +70,8 @@
                 columns: [
                     {{# table_columns }}
                     {
-                        title: '{{parameter_name}}',
-                        key: '{{parameter_name}}',
+                        title: '{{column_name}}',
+                        key: '{{column_name}}',
                         minWidth: 100,
                     },
                     {{/ table_columns }}
