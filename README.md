@@ -112,6 +112,7 @@ add
     "iview-loader": "*",
     "vue": "^2.5.16",
     "vuex": "^3.0.1",
+    "vuex-persistedstate": "2.5.4",
     "vue-router": "^2.8.1",
     "hello-type": "2.24.5"
 }

@@ -28,6 +28,7 @@ class Install
     {
         
         $app_path = $this->storage_disk->getBasePath().'/app';
+        $laravel_root_folder_name = pathinfo( base_path() )['basename'];
 
         $resources_relative_path_name = 'resources';
         $public_relative_path_name = 'public';
@@ -39,7 +40,11 @@ class Install
         if (empty($configuration)) {
             throw new \Exception("NO CONFIGURATION FILE FOUND!! execute \"php artisan vendor:publish\"", 1);
         }
+        if (empty($configuration['spas'])) {
+            throw new \Exception("configuration file property 'spas' should not be empty", 1);
+        }
 
+        $resource_public_folder_names = [];
         $MIX_BASE_URL = 'MIX_BASE_URL';
         $MIX_BASE_RELATIVE_URL = 'MIX_BASE_RELATIVE_URL';
         $MIX_STORAGE_URL = 'MIX_STORAGE_URL';
@@ -66,6 +71,12 @@ class Install
                         throw new \Exception("public_folder_name must be set with resource_folder_name!!", 1);
                     }
                 }
+
+                $resource_public_folder_names []= [
+                    'resources_relative_path_name' => $spa_configuration['resource_folder_name'],
+                    'public_relative_path_name' => $public_relative_path_name,
+                ];
+
             } else {
                 throw new \Exception("no \"resource_folder_name\" found in spa", 1);
             }
@@ -150,10 +161,10 @@ class Install
         }
         if ($add_new_lines['MIX_BASE_URL'] == true) {
             $new_lines []= "\n";
-            $new_lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/public');
+            $new_lines []= str_replace('{{MIX_BASE_URL}}', strtoupper($MIX_BASE_URL), "\n".'{{MIX_BASE_URL}}=http://localhost/'.$laravel_root_folder_name.'/'.$public_relative_path_name);
         }
         if ($add_new_lines['MIX_BASE_RELATIVE_URL'] == true) {
-            $new_lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/public');
+            $new_lines []= str_replace('{{MIX_BASE_RELATIVE_URL}}', strtoupper($MIX_BASE_RELATIVE_URL), "\n".'{{MIX_BASE_RELATIVE_URL}}=/'.$laravel_root_folder_name.'/'.$public_relative_path_name);
         }
         if ($add_new_lines['MIX_STORAGE_URL'] == true) {
             $new_lines []= str_replace('{{MIX_STORAGE_URL}}', strtoupper($MIX_STORAGE_URL), "\n".'{{MIX_STORAGE_URL}}=/public/storage/app');
@@ -177,10 +188,24 @@ class Install
             $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/Crud/Controller.stub');
 
             $stub = str_replace('{{td_entity}}', strtolower($name), $stub);
+            $stub = str_replace('{{resource_folder_name}}', $resources_relative_path_name, $stub);
             $stub = str_replace('{{Td_entity}}', ucfirst(strtolower($name)), $stub);
             
             $this->storage_disk->writeFile($controller_path, $stub);
         }
+
+        //
+        //write webpack.mix.js
+        $webpack_mix_path = $this->storage_disk->getBasePath().'/webpack.mix.js';        
+
+        $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/webpack.mix.js.stub');
+
+        $stub = $this->mustache->render($stub, [
+            'laravel_root_folder_name' => $laravel_root_folder_name,
+            'webpack_mix_resource_public_folders' => $resource_public_folder_names,
+        ]);
+        
+        $this->storage_disk->writeFile($webpack_mix_path, $stub);
 
 
         //

@@ -8,6 +8,8 @@ class SpaController extends Controller
 {
     public function index()
     {
-        return view('iview');
+        view()->addNamespace('vista', base_path('{{resource_folder_name}}'));
+
+        return view('vista::views.iview');
     }
 }
