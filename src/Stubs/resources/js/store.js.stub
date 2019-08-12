@@ -3,9 +3,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import Index from './store/pages/Index.js';
 import BasicLayout from './store/components/BasicLayout.js';
-{{# page_modules }}
-import {{module_name}} from './store/pages/{{module_name}}.js';
-{{/ page_modules }}
+var stores = require("./store.pages.js");
 
 Vue.use(Vuex);
 
@@ -28,9 +26,9 @@ const store = new Vuex.Store({
         pages: {
             namespaced: true,
             modules: {
-                Index: Index,
+                Index: stores.index,
                 {{# page_modules }}
-                {{module_name}}: {{module_name}},
+                {{module_name}}: stores.{{module_name}},
                 {{/ page_modules }}
             }
         },

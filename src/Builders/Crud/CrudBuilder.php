@@ -28,7 +28,7 @@ class CrudBuilder
      */
     public function generate(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
     {
-        
+
         $resources_relative_path_name = 'resources';
         if (!empty($resources_relative_path_name_)) {
             $resources_relative_path_name = $resources_relative_path_name_;
@@ -184,14 +184,14 @@ class CrudBuilder
 
         //
         //update routes
-        $routes_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.pages.js';
+        $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.pages.js';
         
-        $lines = $this->storage_disk->readFileArray($routes_path); 
+        $lines = $this->storage_disk->readFileArray($route_pages_path); 
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue").default;');
         
-        $this->storage_disk->writeFileArray($routes_path, $lines); 
+        $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
 
         //
@@ -215,25 +215,42 @@ class CrudBuilder
             'append_file' => true,
         ]);
 
+
+        //
+        //update store pages
+        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.pages.js';
+        
+        $lines = $this->storage_disk->readFileArray($store_pages_path); 
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./store/pages/{{vst_entity}}_list_delete.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./store/pages/{{vst_entity}}_create.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./store/pages/{{vst_entity}}_update.js").default;');
+        
+        $this->storage_disk->writeFileArray($store_pages_path, $lines);
+
         //
         //update store
         $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.pages.js';
+
+        $lines = $this->storage_disk->readFileArray($store_pages_path);
+
+        $store_pages = [
+            'page_modules' => []
+        ];
+        foreach ($lines as $line) {
+            if (preg_match('/exports\.(.*?) = require/', $line, $match) == 1) {
+                if ($match[1] == 'index') {
+                    continue;
+                }
+                $store_pages['page_modules'] []= [
+                    'module_name' => $match[1],
+                ];
+            }
+        }
 
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
 
-        $stub = $this->mustache->render($stub, [
-            'page_modules' => [
-                [
-                    'module_name' => lcfirst($name).'_create',
-                ],
-                [
-                    'module_name' => lcfirst($name).'_list_delete',
-                ],
-                [
-                    'module_name' => lcfirst($name).'_update',
-                ],
-            ],
-        ]);
+        $stub = $this->mustache->render($stub, $store_pages);
         
         $this->storage_disk->writeFile($store_path, $stub);
 
