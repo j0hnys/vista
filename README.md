@@ -216,7 +216,7 @@ where `test_model` is the name of a laravel model located at `app` folder. After
 
 Than execute:
 ```
-php artisan vista:generate:crud DemoPage --schema_path="/app/Models/Schemas/Exports/test_model.json" ==resources_relative_path_name="resources_front_test"
+php artisan vista:generate:crud DemoPage --schema_path="/app/Models/Schemas/Exports/test_model.json" --resources_relative_path_name="resources_front_test"
 ```
 
 where the first parameter is the prefix of the pages, the next parameter is the exported model and the last is the SPA that the pages are going to be placed.
