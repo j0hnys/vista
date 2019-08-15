@@ -12,7 +12,7 @@ class ExportModel extends Command
      *
      * @var string
      */
-    protected $signature = "vista:export:model {entity_name} {entity_namespace}";
+    protected $signature = "vista:export:model {entity_name} {entity_namespace} {--output_relative_path=}";
 
     /**
      * The console command description.
@@ -46,8 +46,9 @@ class ExportModel extends Command
         try {
             $entity_name = $this->argument('entity_name');
             $entity_namespace = $this->argument('entity_namespace');
+            $output_relative_path = $this->option('output_relative_path') ? $this->option('output_relative_path') : null;
 
-            $builders = $this->export_model->generate($entity_name, $entity_namespace);
+            $builders = $this->export_model->generate($entity_name, $entity_namespace, $output_relative_path);
 
             $this->info($entity_name.' model\'s export successful!');           
             

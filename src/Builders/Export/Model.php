@@ -25,7 +25,7 @@ class Model
      * @param string $name
      * @throws \Exception
      */
-    public function generate($td_entity_name, $td_entity_namespace)
+    public function generate($td_entity_name, $td_entity_namespace, $output_relative_path = null)
     {
         $model = $this->app->make($td_entity_namespace);
 
@@ -60,7 +60,11 @@ class Model
 
         //
         //export
-        $schema_export_path = $this->storage_disk->getBasePath().'/app/Models/Schemas/Exports/'.$td_entity_name.'.json';
+        $output_relative_path_ = '/app/Models/Schemas/Exports/'.$td_entity_name.'.json';
+        if ($output_relative_path) {
+            $output_relative_path_ = $output_relative_path;
+        }
+        $schema_export_path = $this->storage_disk->getBasePath().$output_relative_path_;
         $this->storage_disk->makeDirectory($schema_export_path);
 
         $this->storage_disk->writeFile($schema_export_path, json_encode($schema,JSON_PRETTY_PRINT));        
