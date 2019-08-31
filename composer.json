@@ -1,6 +1,6 @@
 {
     "name": "j0hnys/vista",
-    "description": "laravel UI generator using iview, vue",
+    "description": "A laravel package for developing Client UI using Iview, Vue",
     "type": "project",
     "license": "MIT",
     "authors": [
