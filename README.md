@@ -7,6 +7,8 @@ The purpose of this package is to generate a web UI for a laravel application us
 
 The package generates a Single Page Application (SPA) and functionallity through custom artisan commands which generate code. It uses vue js and iview UI Toolkit as a foundation.
 
+**video introduction at:** https://www.youtube.com/watch?v=4zuZATtU1GA
+
 ## Application architecture
 
 ### Preface
