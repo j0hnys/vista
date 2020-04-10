@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "mustache/mustache": "2.12.0",
-        "doctrine/dbal": "2.9.1"
+        "mustache/mustache": "^2.0",
+        "doctrine/dbal": "^2.10"
     },
     "require-dev": {
-        "orchestra/testbench": "^3.8"
+        "orchestra/testbench": "^5.0"
     },
     "minimum-stability": "alpha",
     "autoload": {
