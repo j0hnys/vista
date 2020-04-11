@@ -7,26 +7,26 @@
 
 require('./bootstrap');
 
-import iView from 'iview';
+import ViewUI from 'view-design';
 import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import App from './app.vue';
 import Routers from './router.js';
 import MainMenu from './navigation/main_menu/main_menu.js';
-import 'iview/dist/styles/iview.css';
+import 'view-design/dist/styles/iview.css';
 
 window.Vue = require('vue');
 window.Vuex = require('vuex');
-window.iView = require('iview');
+window.ViewUI = require('view-design');
 
 Vue.use(VueRouter);
-Vue.use(iView);
+Vue.use(ViewUI);
 
 //
 //tmp
 var util = {};
 util.title = function (title) {
-    title = title ? title + ' - Home' : 'iView project';
+    title = title ? title + ' - Home' : 'ViewUI project';
     window.document.title = title;
 };
 //
@@ -45,13 +45,13 @@ const router = new VueRouter(RouterConfig);
 
 //set intial states
 router.beforeEach((to, from, next) => {
-    iView.LoadingBar.start();
+    ViewUI.LoadingBar.start();
     util.title(to.meta.title);
     next();
 });
 
 router.afterEach((to, from, next) => {
-    iView.LoadingBar.finish();
+    ViewUI.LoadingBar.finish();
     window.scrollTo(0, 0);
 });
 
