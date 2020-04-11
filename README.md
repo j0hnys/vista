@@ -110,7 +110,7 @@ to laravel's `composer.json` and then execute `composer update`
 add
 ```json
 "dependencies": {
-    "iview": "^3.0.0",
+    "view-design": "^4.0.0",
     "iview-loader": "*",
     "vue": "^2.5.16",
     "vuex": "^3.0.1",
