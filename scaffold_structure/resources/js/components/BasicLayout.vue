@@ -79,6 +79,7 @@
                         <Col :xs="3" :sm="3" :md="2" :lg="2">
                             <Col span="12">
                                 <Poptip
+                                    style="position: relative; top: 5px;"
                                     confirm
                                     title="Want to see all notifications?"
                                     ok-text="yes"
