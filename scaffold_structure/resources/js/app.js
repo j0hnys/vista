@@ -13,7 +13,7 @@ import Vuex from 'vuex';
 import App from './app.vue';
 import Routers from './router.js';
 import MainMenu from './navigation/main_menu/main_menu.js';
-import 'iview/dist/styles/iview.css';
+import 'view-design/dist/styles/iview.css';
 
 window.Vue = require('vue');
 window.Vuex = require('vuex');
