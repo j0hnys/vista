@@ -9,9 +9,9 @@ require('./bootstrap');
 
 import ViewUI from 'view-design';
 import VueRouter from 'vue-router';
-import store from './store';
+import store from '../application/store';
 import App from './app.vue';
-import Routers from './router.js';
+import Routers from '../application/router.js';
 import Autoload from './plugins/Autoload';
 import TypedComponentData from './type_checker/TypedComponentData.js';
 
