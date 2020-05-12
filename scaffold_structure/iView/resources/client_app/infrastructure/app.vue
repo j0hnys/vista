@@ -9,12 +9,7 @@
     </div>
 </template>
 <script>
-    // import app_layout from '../modules/presentation/components/BasicLayout.vue';
-
     export default {
-        // components: {
-        //     'app-layout': app_layout,
-        // },
         data () {
             return {}
         },
@@ -22,10 +17,10 @@
             console.log('app mounted');
         },
         beforeDestroy () {
-
+            //
         },
         methods: {
-
+            //
         }
     }
 </script>

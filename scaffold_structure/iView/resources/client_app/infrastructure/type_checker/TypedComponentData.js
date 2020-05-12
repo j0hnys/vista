@@ -2,25 +2,7 @@ import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from '
 import TypeChecker from '../type_checker/TypeChecker.js';
 
 var TypedComponentData = {};
-TypedComponentData.install = function (Vue, options) {
-    
-    // console.log({
-    //     Vue: Vue,
-    // });
-
-    // 1. add global method or property
-    Vue.myGlobalMethod = function () {
-        // some logic ...
-    }
-  
-    // 2. add a global asset
-    Vue.directive('my-directive', {
-        bind (el, binding, vnode, oldVnode) {
-            // some logic ...
-        }      
-    })
-  
-    // 3. inject some component options
+TypedComponentData.install = function (Vue, options) {    
     Vue.mixin({
         created() {
             const options = this.$options;
@@ -35,8 +17,7 @@ TypedComponentData.install = function (Vue, options) {
             }
         },
     })
-  
-    // 4. add an instance method
+    
     Vue.prototype.$typeChecker = {
         check(namespace, data) {
             return TypeChecker.checkNamespace(namespace, data);

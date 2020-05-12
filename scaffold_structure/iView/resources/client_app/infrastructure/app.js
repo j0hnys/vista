@@ -14,7 +14,6 @@ import App from './app.vue';
 import Routers from './router.js';
 import Autoload from './plugins/Autoload';
 import TypedComponentData from './type_checker/TypedComponentData.js';
-// import 'view-design/dist/styles/iview.css';
 
 window.Vue = require('vue');
 window.ViewUI = require('view-design');
@@ -22,9 +21,6 @@ window.ViewUI = require('view-design');
 Vue.use(VueRouter);
 Vue.use(ViewUI);
 Vue.use(TypedComponentData);
-// Vue.options._base._installedPlugins = Vue.options._base._installedPlugins.filter(plugin => 
-//     plugin.name !== 'Autoload'
-// );
 Vue.use(Autoload);
 
 
