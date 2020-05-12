@@ -1,4 +1,3 @@
-import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from 'hello-type'
 import TypeChecker from '../type_checker/TypeChecker.js';
 
 var TypedComponentData = {};
