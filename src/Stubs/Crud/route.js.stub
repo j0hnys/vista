@@ -1,4 +1,4 @@
-    { // add "import {{vst_entity}}_list_delete from './pages/{{vst_entity}}_list_delete.vue';" at the top
+    {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_list',
         title: 'otinanai',
         name: '{{vst_entity}}_list_delete',
@@ -7,7 +7,7 @@
             submenu: null,
         }
     },
-    { // add "import {{vst_entity}}_create from './pages/{{vst_entity}}_create.vue';" at the top
+    {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_create',
         title: 'otinanai',
         name: '{{vst_entity}}_create',
@@ -16,7 +16,7 @@
             submenu: null,
         }
     },
-    { // add "import {{vst_entity}}_update from './pages/{{vst_entity}}_update.vue';" at the top
+    {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{vst_entity}}_update/:id',
         title: 'otinanai',
         name: '{{vst_entity}}_update',

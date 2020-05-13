@@ -17,6 +17,6 @@ mix.js('resources/js/app.js', 'public/js')
    .sass('resources/sass/app.scss', 'public/css');
 
 {{# webpack_mix_resource_public_folders }}
-mix.js('{{resources_relative_path_name}}/js/app.js', '{{public_relative_path_name}}/js')
-   .sass('{{resources_relative_path_name}}/sass/app.scss', '{{public_relative_path_name}}/css');
+mix.js('{{resources_relative_path_name}}/client_app/infrastructure/app.js', 'public_backend/js')
+   .sass('{{resources_relative_path_name}}/client_app/modules/presentation/styles/app.scss', 'public_backend/css');
 {{/ webpack_mix_resource_public_folders }}
