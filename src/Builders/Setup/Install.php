@@ -84,15 +84,13 @@ class Install
 
         //
         //folder structure creation
-        if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/app.js')) {
+        if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/infrastructure/app.js')) {
             
             //resources folder 
             $source = __DIR__.'/../../../scaffold_structure/iView/resources';
             $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/.';
 
-            
-            $this->storage_disk->makeDirectory($destination);
-            
+            $this->storage_disk->makeDirectory($destination);            
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
             
             //public folder
@@ -109,7 +107,7 @@ class Install
 
         //
         //write router.js
-        $router_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.js';
+        $router_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/router.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -119,7 +117,7 @@ class Install
 
         //
         //write main_menu.js
-        $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
+        $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/constants/navigation/main_menu/main_menu.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -129,7 +127,7 @@ class Install
 
         //
         //write demo_sub_menu.js
-        $demo_sub_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/sub_menus/demo_sub_menu.js';
+        $demo_sub_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/constants/navigation/sub_menus/demo_sub_menu.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/sub_menus/demo_sub_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -223,7 +221,7 @@ class Install
 
         //
         //update store
-        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.js';
 
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
 
