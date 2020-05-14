@@ -1,0 +1,83 @@
+<style scoped>
+
+</style>
+<template>
+    <Table border :columns="table_columns" :data="table_data"></Table>
+</template>
+<script>
+    export default {
+        namespace: '{{component_namespace}}',
+        name: '{{component_name}}',
+        props: {
+            table_data: {
+                type: Array,
+                default: [],
+            }
+        },
+        data() {
+            var local = {
+                //
+            };
+
+            //
+            //component local registration
+            return {
+                ...local,
+                table_columns: [
+                    {{# table_columns }}
+                    {
+                        title: '{{column_name}}',
+                        key: '{{column_name}}',
+                        minWidth: 100,
+                    },
+                    {{/ table_columns }}
+                    {
+                        title: 'Action',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
+                        render: (h, params) => {
+                            var row = params.row;
+
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.$emit('on-row-update-clicked', row.id);
+                                            //this.$router.push({ name: '{{vst_entity}}_update', params: { id: row.id } });
+                                        }
+                                    }
+                                }, 'Edit'),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.$emit('on-row-delete-clicked', row.id);
+                                            // this.ajax().delete(row.id);
+                                        }
+                                    }
+                                }, 'Delete')
+                            ]);
+                        }
+                    }
+                ],
+            };
+        },
+        methods: {
+            //
+        },
+        mounted() {
+            //
+        },
+    }
+</script>

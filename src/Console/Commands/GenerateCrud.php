@@ -4,6 +4,7 @@ namespace j0hnys\Vista\Console\Commands;
 
 use Illuminate\Console\Command;
 use j0hnys\Vista\Builders\Crud;
+use j0hnys\Vista\Builders\Page;
 
 class GenerateCrud extends Command
 {
@@ -34,6 +35,9 @@ class GenerateCrud extends Command
         if (!empty($crud_builder)) {
             $this->crud_builder = $crud_builder;
         }
+
+        $this->page_builder = new Page();
+
     }
     
     /**
@@ -49,7 +53,8 @@ class GenerateCrud extends Command
             $resources_relative_path_name = $this->option('resources_relative_path_name') ? $this->option('resources_relative_path_name') : '';
             
 
-            $crud = $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
+            // $crud = $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
+            $this->page_builder->generate($name, $schema_path, $resources_relative_path_name);
             
 
             $this->info($name.' CRUD successfully created');

@@ -1,0 +1,14 @@
+import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from 'hello-type'
+
+const ModelType = new Type({
+    {{# type_parameters }}
+    {{property_name}}: {{property_value}},
+    {{/ type_parameters }}
+});
+
+export default {
+    namespace: '{{model_type_namespace}}',
+    assert(data) {
+        ModelType.assert(data);
+    },
+};

@@ -4,6 +4,7 @@ namespace j0hnys\Vista;
 
 use Illuminate\Support\ServiceProvider;
 use j0hnys\Vista\Console\Commands\GenerateCrud;
+use j0hnys\Vista\Console\Commands\GeneratePage;
 use j0hnys\Vista\Console\Commands\Install;
 use j0hnys\Vista\Console\Commands\ExportModel;
 // . . .
@@ -36,6 +37,9 @@ class VistaServiceProvider extends ServiceProvider
         $this->app->singleton('vista.generate_crud', function ($app) {
             return new GenerateCrud();
         });
+        $this->app->singleton('vista.generate_page', function ($app) {
+            return new GeneratePage();
+        });
         $this->app->singleton('vista.install', function ($app) {
             return new Install();
         });
@@ -46,6 +50,7 @@ class VistaServiceProvider extends ServiceProvider
 
         $this->commands([
             'vista.generate_crud',
+            'vista.generate_page',
             'vista.install',
             'vista.export_model',
             // . . .

@@ -37,7 +37,7 @@
 
                 <Row>
                     <Col>
-                        <Table border :columns="columns" :data="data"></Table>
+                        <{{page_component_name}} :table_data="data"></{{page_component_name}}>
                      </Col>
                 </Row>
 
@@ -48,84 +48,11 @@
 <script>
     export default {
         data() {
-            var state = {
-                formValidate: {
-                    {{# form_data_parameters }}
-                    {{# attributes }}
-                    {{column_name}}: {{default_value}},
-                    {{/ attributes }}
-                    {{/ form_data_parameters }}
-                },
-            };
-            if (this.$store.state.pages.{{vst_entity}}_list_delete) 
-            {
-                state = this.$store.state.pages.{{vst_entity}}_list_delete;
-            }
-
-
             //
             //component state registration
             return {
-                ...state,
-                columns: [
-                    {{# table_columns }}
-                    {
-                        title: '{{column_name}}',
-                        key: '{{column_name}}',
-                        minWidth: 100,
-                    },
-                    {{/ table_columns }}
-                    {
-                        title: 'Action',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            var row = params.row;
-
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.$router.push({ name: '{{vst_entity}}_update', params: { id: row.id } });
-                                        }
-                                    }
-                                }, 'Edit'),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.ajax().delete(row.id);
-                                        }
-                                    }
-                                }, 'Delete')
-                            ]);
-                        }
-                    }
-                ],
                 data: []
-
-
             };
-        },
-        watch: {
-            formValidate: {
-                deep: true,
-                handler(value) 
-                {
-                    this.$store.commit('pages/{{vst_entity}}_list_delete/setFormValidate', value);
-                }
-            }
         },
         methods: {
             ajax() {
@@ -154,13 +81,6 @@
             },
         },
         mounted() {
-            // console.log('test list mounted');
-            // console.log({
-            //     // 'this.$store': this.$store,
-            //     // 'this.$store.state': this.$store.state,
-            //     // 'this.$store.state.Index': this.$store.state.Index,
-            //     'this.$route': this.$route,
-            // });
 
             this.ajax().get();
 
