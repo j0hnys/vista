@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import Index from './store/pages/Index.js';
-import BasicLayout from './store/components/BasicLayout.js';
+import Index from '../modules/presentation/store/pages/Index.js';
+import BasicLayout from '../modules/presentation/store/components/BasicLayout.js';
 var stores = require("./store.pages.js");
 
 Vue.use(Vuex);
@@ -10,7 +10,9 @@ Vue.use(Vuex);
 window.Vuex = require('vuex');
 
 const store = new Vuex.Store({
-    plugins: [createPersistedState()],
+    plugins: [createPersistedState({
+        key: '{{browser_local_storage_key}}'
+    })],
     state: {
         base_url: process.env.MIX_BASE_URL+'/',
         base_relative_url: process.env.MIX_BASE_RELATIVE_URL+'/',

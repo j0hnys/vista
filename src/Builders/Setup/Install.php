@@ -29,6 +29,7 @@ class Install
         
         $app_path = $this->storage_disk->getBasePath().'/app';
         $laravel_root_folder_name = pathinfo( base_path() )['basename'];
+        $browser_local_storage_key = $laravel_root_folder_name;
 
         $resources_relative_path_name = 'resources';
         $public_relative_path_name = 'public';
@@ -49,6 +50,9 @@ class Install
         $MIX_BASE_RELATIVE_URL = 'MIX_BASE_RELATIVE_URL';
         $MIX_STORAGE_URL = 'MIX_STORAGE_URL';
         foreach ($configuration['spas'] as $spa_configuration) {
+            if (!empty($spa_configuration['browser_local_storage_key'])) {
+                $browser_local_storage_key = $spa_configuration['browser_local_storage_key'];
+            }
             if (!empty($spa_configuration['resource_folder_name'])) {
                 if ($spa_configuration['resource_folder_name'] == $resources_relative_path_name) {
 
@@ -227,6 +231,7 @@ class Install
 
         $stub = $this->mustache->render($stub, [
             'page_modules' => [],
+            'browser_local_storage_key' => $browser_local_storage_key
         ]);
         
         $this->storage_disk->writeFile($store_path, $stub);

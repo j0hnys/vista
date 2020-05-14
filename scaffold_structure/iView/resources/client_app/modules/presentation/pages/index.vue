@@ -30,7 +30,7 @@
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
                 <h1>
-                    Hi!!!!
+                    Hi!
                 </h1>
 
                 <router-link :to="{name:'/'}">Home</router-link>
