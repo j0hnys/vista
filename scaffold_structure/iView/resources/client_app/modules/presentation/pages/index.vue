@@ -44,28 +44,28 @@
 </template>
 
 <script>
-    import HelloType, { Dict, Enum, Tuple, List, Type, Rule, Self, IfExists } from 'hello-type'
-    import TypeChecker from '../../../infrastructure/type_checker/TypeChecker.js';
-
     export default {
         namespace: 'pages/index',
+        use: {
+            mixins: [
+                {
+                    alias: 'demo_mixin',
+                    namespace: 'mixins/index',
+                }
+            ]
+        },
         name: 'index',
         data() {
-            var state = {
+            var local = {
                 variable: '',
             };
-            if (this.$store.state.pages.Index) 
-            {
-                state = this.$store.state.pages.Index;
-            }
-
 
             return {
-                ...state,
+                ...local,
             };
         },
         types: {
-            namespace: 'test/test/test',
+            namespace: 'models/Types/Index',
             schema() {
                 return new Type({
                     variable: String,
@@ -88,22 +88,11 @@
                 console.log('pages/Index/test global event fired with data: "'+data+'"');    
             });
 
-
-            TypeChecker.checkNamespace('ena/dyo/tria',{
-                name: '1',
-                age: 11,
-                nested: [
-                    {
-                        parameter_one: 1,
-                        parameter_two: 1,
-                    },
-                    {
-                        parameter_one: 1,
-                        parameter_two: 1,
-                    },
-                ],
+            this.$typeChecker.check('models/Types/Index',{
+                variable: '1',
             });
 
+            console.log(this.demo_mixin().getSimpleString());
         },
     }
 </script>
