@@ -1,0 +1,27 @@
+export default {
+    namespace: '{{namespace}}',
+    name: '{{name}}',
+    methods: {
+        create(data, self) {
+            var form_data = new FormData();
+            
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const element = data[key];
+                    
+                    if (key == 'file') {
+                        form_data.append(key, data[key], data[key].name);
+                    } else {
+                        form_data.append(key, data[key]);
+                    }
+                }
+            }
+
+            return window.axios.post( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_create_post}}',  form_data ).then((response) => {
+                self.$Message.success('Success!');
+            }).catch(error => {
+                console.log(error);
+            });
+        },
+    }
+}

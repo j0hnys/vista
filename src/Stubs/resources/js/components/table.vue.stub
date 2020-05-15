@@ -50,7 +50,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.$emit('on-row-update-clicked', row.id);
+                                            this.$emit('on-row-edit-clicked', row.id);
                                             //this.$router.push({ name: '{{vst_entity}}_update', params: { id: row.id } });
                                         }
                                     }

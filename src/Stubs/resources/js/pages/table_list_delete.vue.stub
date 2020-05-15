@@ -1,28 +1,5 @@
 <style scoped>
-    .index {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        text-align: center;
-    }
-        .index h1 {
-            height: 150px;
-        }
-            .index h1 img {
-                height: 100%;
-            }
-        .index h2 {
-            color: #666;
-            margin-bottom: 200px;
-        }
-            .index h2 p {
-                margin: 0 0 50px;
-            }
-    .ivu-row-flex {
-        height: 100%;
-    }
+
 </style>
 <template>
     <div class="{{vst_entity}}_list_delete">
@@ -31,13 +8,13 @@
 
                 <Row type="flex" justify="end" style="margin-bottom: 20px;">
                     <Col>
-                        <Button type="primary" @click="on_create_button_clicked">Create</Button>
+                        <Button type="primary" @click="onCreateButtonClicked">Create</Button>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col>
-                        <{{page_component_name}} :table_data="data"></{{page_component_name}}>
+                        <{{page_component_name}} :table_data="data" @on-row-delete-clicked="onRowDeleteClicked"></{{page_component_name}}>
                      </Col>
                 </Row>
 
@@ -61,9 +38,12 @@
             };
         },
         methods: {
-            on_create_button_clicked() {
+            onCreateButtonClicked() {
                 this.$router.push({ name: '{{vst_entity}}_create' });
             },
+            onRowDeleteClicked(id) {
+                this.ajax().delete(id);
+            }
         },
         mounted() {
 

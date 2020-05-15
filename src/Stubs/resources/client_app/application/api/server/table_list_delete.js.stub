@@ -10,8 +10,7 @@ export default {
             });
         },
         delete(id) {
-            return true;
-            window.axios.delete( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_delete_delete}}/'+id ).then(({ data }) => {
+            return window.axios.delete( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_delete_delete}}/'+id ).then(({ data }) => {
                 window.location.reload();
             }).catch(error => {
                 console.log(error);
