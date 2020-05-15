@@ -14,7 +14,7 @@
 
                 <Row>
                     <Col>
-                        <{{page_component_name}} :table_data="data" @on-row-delete-clicked="onRowDeleteClicked"></{{page_component_name}}>
+                        <{{page_component_name}} :table_data="data" @on-row-edit-clicked="onRowEditClicked" @on-row-delete-clicked="onRowDeleteClicked"></{{page_component_name}}>
                      </Col>
                 </Row>
 
@@ -40,6 +40,12 @@
         methods: {
             onCreateButtonClicked() {
                 this.$router.push({ name: '{{vst_entity}}_create' });
+            },
+            onRowDeleteClicked(id) {
+                this.ajax().delete(id);
+            },
+            onRowEditClicked(id) {
+                this.$router.push({ name: '{{vst_entity}}_update', params: { id: id } });
             },
             onRowDeleteClicked(id) {
                 this.ajax().delete(id);

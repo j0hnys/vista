@@ -74,7 +74,7 @@ class Page
 
         // //
         // //update generation
-        // $this->update($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
+        $this->update($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
         
         
 
@@ -85,7 +85,7 @@ class Page
         $lines = $this->storage_disk->readFileArray($route_pages_path); 
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/pages/{{vst_entity}}_list_delete.vue").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/pages/{{vst_entity}}_create.vue").default;');
-        // $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/pages/{{vst_entity}}_update.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/pages/{{vst_entity}}_update.vue").default;');
         
         $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
@@ -119,7 +119,7 @@ class Page
         $lines = $this->storage_disk->readFileArray($store_pages_path); 
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/store/pages/{{vst_entity}}_list_delete.js").default;');
         $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/store/pages/{{vst_entity}}_create.js").default;');
-        // $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/store/pages/{{vst_entity}}_update.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/store/pages/{{vst_entity}}_update.js").default;');
         
         $this->storage_disk->writeFileArray($store_pages_path, $lines);
 
@@ -382,35 +382,151 @@ class Page
             
             $this->storage_disk->writeFile($create_store_path, $stub);
         }
+    }
 
+    public function update(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
+    {
+        $page_component_name = $name.'_update';
+        $page_api_server_namespace = 'application/api/server/'.$name.'_update';
+        $page_namespace = 'modules/presentation/page/'.$name.'_update_page';
+        $page_name = $name.'_update_page';
+        $page_component_namespace = 'modules/presentation/components/'.$name.'_update';
+        $mixin_namespace = 'modules/presentation/mixins/'.$name.'_update';
+        $model_type_namespace = 'modules/presentation/models/Types/'.$name.'_update';
+        $model_type = [
+            [
+                'property_name' => 'variable1',
+                "property_value" => "String",
+            ]
+        ];
 
-        //------------------------------------------------------------------------------------
-
-
-
-        $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
-        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_create.js';
+        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/pages/'.strtolower($name).'_update.vue';
+        $update_api_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/api/server/'.strtolower($name).'_update.js';
+        $update_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/components/'.strtolower($name).'_update.vue';
+        $update_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/mixins/'.strtolower($name).'_update.js';
+        $update_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/models/Types/'.strtolower($name).'_update.js';
+        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/store/pages/'.lcfirst($name).'_update.js';
         
-        // if (!$this->storage_disk->fileExists($create_path)) {
-        //     $this->storage_disk->makeDirectory($create_path);
+        //page
+        if (!$this->storage_disk->fileExists($update_path)) {
+            $this->storage_disk->makeDirectory($update_path);
 
-        //     $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/form_create.vue.stub');
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/form_update.vue.stub');
+            
+            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
+            $stub = $this->mustache->render($stub, [
+                'page_namespace' => $page_namespace,
+                'page_name' => $page_name,
+                'page_api_server_namespace' => $page_api_server_namespace,
+                'page_component_name' => $page_component_name,
+            ]);
+            
+            $this->storage_disk->writeFile($update_path, $stub);
+        }
+
+        //api
+        if (!$this->storage_disk->fileExists($update_api_path)) {
+            $this->storage_disk->makeDirectory($update_api_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/client_app/application/api/server/form_update.js.stub');
+            
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = $this->mustache->render($stub, [
+                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
+                'ajax_update_post' => $model_schema['ajax']['update']['POST'],
+                'namespace' => $page_api_server_namespace,
+                'name' => $page_component_name,
+            ]);
+            
+            $this->storage_disk->writeFile($update_api_path, $stub);
+        }
+
+        //component
+        if (!$this->storage_disk->fileExists($update_component_path)) {
+            $this->storage_disk->makeDirectory($update_component_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/components/form.vue.stub');
+            
+            $stub = $this->mustache->render($stub, [
+                'component_name' => $page_component_name,
+                'component_namespace' => $page_component_namespace,
+                'form_elements' => $model_schema['presentation']['schema'],
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+                'validation_rules' => $model_schema['presentation']['schema'],
+            ]);
+            
+            $this->storage_disk->writeFile($update_component_path, $stub);
+        }
+
+        //mixin
+        if (!$this->storage_disk->fileExists($update_mixin_path)) {
+            $this->storage_disk->makeDirectory($update_mixin_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/mixins/mixin.js.stub');
+            
+            $stub = $this->mustache->render($stub, [
+                'mixin_namespace' => $mixin_namespace,
+                'mixin_name' => $page_component_name,
+            ]);
+            
+            $this->storage_disk->writeFile($update_mixin_path, $stub);
+        }
+
+        //model type
+        if (!$this->storage_disk->fileExists($update_model_type_path)) {
+            $this->storage_disk->makeDirectory($update_model_type_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/models/Types/type.js.stub');
+            
+            $stub = $this->mustache->render($stub, [
+                'model_type_namespace' => $model_type_namespace,
+            ]);
+            
+            $this->storage_disk->writeFile($update_model_type_path, $stub);
+        }
+
+        //store
+        if (!$this->storage_disk->fileExists($update_store_path)) {
+            $this->storage_disk->makeDirectory($update_store_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/stores/pages/FormPage.js.stub');
+            
+            $stub = $this->mustache->render($stub, [
+                'type_parameters' => $model_type,
+                'form_data_parameters' => $model_schema['presentation']['schema'],
+            ]);
+            
+            $this->storage_disk->writeFile($update_store_path, $stub);
+        }
+
+
+        //--------------------------------------------------------------------------------------
+
+
+        // $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
+        // $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
+        
+        // if (!$this->storage_disk->fileExists($update_path)) {
+        //     $this->storage_disk->makeDirectory($update_path);
+
+        //     $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/form_update.vue.stub');
 
         //     $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
         //     $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
         //     $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
         //     $stub = $this->mustache->render($stub, [
-        //         'ajax_create_post' => $model_schema['ajax']['create']['POST'],
+        //         'ajax_get_get' => $model_schema['ajax']['get']['GET'],
+        //         'ajax_update_post' => $model_schema['ajax']['update']['POST'],
         //         'form_elements' => $model_schema['presentation']['schema'],
         //         'form_data_parameters' => $model_schema['presentation']['schema'],
         //         'validation_rules' => $model_schema['presentation']['schema'],
         //     ]);
             
-        //     $this->storage_disk->writeFile($create_path, $stub);
+        //     $this->storage_disk->writeFile($update_path, $stub);
         // }
 
-        // if (!$this->storage_disk->fileExists($create_store_path)) {
-        //     $this->storage_disk->makeDirectory($create_store_path);
+        // if (!$this->storage_disk->fileExists($update_store_path)) {
+        //     $this->storage_disk->makeDirectory($update_store_path);
 
         //     $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/stores/pages/FormPage.js.stub');
 
@@ -421,48 +537,8 @@ class Page
         //         'form_data_parameters' => $model_schema['presentation']['schema'],
         //     ]);
             
-        //     $this->storage_disk->writeFile($create_store_path, $stub);
+        //     $this->storage_disk->writeFile($update_store_path, $stub);
         // }
-    }
-
-    public function update(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
-    {
-        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
-        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
-        
-        if (!$this->storage_disk->fileExists($update_path)) {
-            $this->storage_disk->makeDirectory($update_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/form_update.vue.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
-                'ajax_update_post' => $model_schema['ajax']['update']['POST'],
-                'form_elements' => $model_schema['presentation']['schema'],
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-                'validation_rules' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($update_path, $stub);
-        }
-
-        if (!$this->storage_disk->fileExists($update_store_path)) {
-            $this->storage_disk->makeDirectory($update_store_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/stores/pages/FormPage.js.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($update_store_path, $stub);
-        }
     }
 
     /**

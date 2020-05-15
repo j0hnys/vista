@@ -51,7 +51,6 @@
                                     on: {
                                         click: () => {
                                             this.$emit('on-row-edit-clicked', row.id);
-                                            //this.$router.push({ name: '{{vst_entity}}_update', params: { id: row.id } });
                                         }
                                     }
                                 }, 'Edit'),
@@ -63,7 +62,6 @@
                                     on: {
                                         click: () => {
                                             this.$emit('on-row-delete-clicked', row.id);
-                                            // this.ajax().delete(row.id);
                                         }
                                     }
                                 }, 'Delete')
