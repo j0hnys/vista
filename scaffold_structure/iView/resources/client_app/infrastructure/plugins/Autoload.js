@@ -1,3 +1,4 @@
+import api_modules from '../autoload/ApiModules';
 import mixin_modules from '../autoload/MixinModules';
 import component_modules from '../autoload/ComponentModules';
 import page_modules from '../autoload/PageModules';
@@ -13,50 +14,53 @@ register_modules.install = function (Vue)
         Vue.component(component.name, component);
     });
 
-    Object.values(page_modules).forEach(page => {
-        
+    Object.values(page_modules).forEach(page => {        
         if (page.use) {
-            if (page.use.mixins) {
+            page.mixins = [];
 
+            // the main case
+            if (Array.isArray(page.use)) {
+                let aliased_methods_in_mixin = {};
+                let mixins = page.use;
 
-                // the main case
-                if (Array.isArray(page.use.mixins)) {
-                    let aliased_methods_in_mixin = {};
-                    let mixins = page.use.mixins;
+                let return_methods = {};
 
-                    let return_methods = {};
+                for (const index in mixins) {
+                    if (mixins.hasOwnProperty(index)) {
+                        const element = mixins[index];
 
-                    for (const index in mixins) {
-                        if (mixins.hasOwnProperty(index)) {
-                            const element = mixins[index];
+                        if (typeof return_methods[element.alias] === 'undefined') {
+                            return_methods[element.alias] = [];
+                        }
 
-                            if (typeof return_methods[element.alias] === 'undefined') {
-                                return_methods[element.alias] = [];
-                            }
+                        // registration
+                        if (mixin_modules[element.namespace]) {                                
                             return_methods[element.alias].push(mixin_modules[element.namespace].methods);
+                        } else if (api_modules[element.namespace]) {
+                            return_methods[element.alias].push(api_modules[element.namespace].methods);
+                        } else {
+                            throw "Namespace: \""+element.namespace+"\" does not exist."
                         }
                     }
-
-                    for (const alias in return_methods) {
-                        if (return_methods.hasOwnProperty(alias)) {
-                            const element_ = return_methods[alias];
-                            
-                            aliased_methods_in_mixin[alias] = {
-                                [alias]() {
-                                    return Object.assign(...Object.values(element_));
-                                },
-                            };
-                        }
-                    }
-
-                    var final_aliased_methods_in_mixin = Object.assign(...Object.values(aliased_methods_in_mixin));
-
-                    page.mixins = [];
-                    page.mixins.push({
-                        methods: final_aliased_methods_in_mixin
-                    });
                 }
 
+                for (const alias in return_methods) {
+                    if (return_methods.hasOwnProperty(alias)) {
+                        const element_ = return_methods[alias];
+                        
+                        aliased_methods_in_mixin[alias] = {
+                            [alias]() {
+                                return Object.assign(...Object.values(element_));
+                            },
+                        };
+                    }
+                }
+
+                var final_aliased_methods_in_mixin = Object.assign(...Object.values(aliased_methods_in_mixin));
+
+                page.mixins.push({
+                    methods: final_aliased_methods_in_mixin
+                });
             }
         }
     });

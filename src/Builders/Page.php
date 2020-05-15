@@ -153,15 +153,18 @@ class Page
         
         $this->storage_disk->writeFile($store_path, $stub);
 
-            
+        
     }
 
     public function listDelete(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
     {
         $page_component_name = $name;
-        $page_component_namespace = 'presentation/components/'.$name;
-        $mixin_namespace = 'presentation/mixins/'.$name;
-        $model_type_namespace = 'presentation/models/Types/'.$name;
+        $page_api_server_namespace = 'application/api/server/'.$name;
+        $page_namespace = 'modules/presentation/page/'.$name;
+        $page_name = $name.'_page';
+        $page_component_namespace = 'modules/presentation/components/'.$name;
+        $mixin_namespace = 'modules/presentation/mixins/'.$name;
+        $model_type_namespace = 'modules/presentation/models/Types/'.$name;
         $model_type = [
             [
                 'property_name' => 'variable1',
@@ -170,6 +173,7 @@ class Page
         ];
 
         $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_api_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/api/server/'.strtolower($name).'_list_delete.js';
         $list_delete_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/components/'.strtolower($name).'_list_delete.vue';
         $list_delete_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/mixins/'.strtolower($name).'_list_delete.js';
         $list_delete_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/models/Types/'.strtolower($name).'_list_delete.js';
@@ -181,15 +185,32 @@ class Page
 
             $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/table_list_delete.vue.stub');
             
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
             $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
             $stub = $this->mustache->render($stub, [
-                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
-                'ajax_delete_delete' => $model_schema['ajax']['delete']['DELETE'],
+                'page_namespace' => $page_namespace,
+                'page_name' => $page_name,
+                'page_api_server_namespace' => $page_api_server_namespace,
                 'page_component_name' => $page_component_name,
             ]);
             
             $this->storage_disk->writeFile($list_delete_path, $stub);
+        }
+
+        //api
+        if (!$this->storage_disk->fileExists($list_delete_api_path)) {
+            $this->storage_disk->makeDirectory($list_delete_api_path);
+
+            $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/client_app/application/api/server/table_list_delete.js.stub');
+            
+            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
+            $stub = $this->mustache->render($stub, [
+                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
+                'ajax_delete_delete' => $model_schema['ajax']['delete']['DELETE'],
+                'namespace' => $page_api_server_namespace,
+                'name' => $page_component_name,
+            ]);
+            
+            $this->storage_disk->writeFile($list_delete_api_path, $stub);
         }
 
         //component

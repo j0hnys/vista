@@ -46,14 +46,12 @@
 <script>
     export default {
         namespace: 'pages/index',
-        use: {
-            mixins: [
-                {
-                    alias: 'demo_mixin',
-                    namespace: 'mixins/index',
-                }
-            ]
-        },
+        use: [
+            {
+                alias: 'demo_mixin',
+                namespace: 'mixins/index',
+            }
+        ],
         name: 'index',
         data() {
             var local = {
