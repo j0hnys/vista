@@ -28,7 +28,6 @@ class Page
      */
     public function generate(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
     {
-
         $resources_relative_path_name = 'resources';
         if (!empty($resources_relative_path_name_)) {
             $resources_relative_path_name = $resources_relative_path_name_;
@@ -71,91 +70,22 @@ class Page
         //create generation
         $this->create($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
         
-
         //
         //update generation
         $this->update($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
-        
-        
-
-        //
-        //update routes
-        $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.pages.js';
-        
-        $lines = $this->storage_disk->readFileArray($route_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/pages/{{vst_entity}}_list_delete.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/pages/{{vst_entity}}_create.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/pages/{{vst_entity}}_update.vue").default;');
-        
-        $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
 
-        //
-        //update router
-        $router_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.js';
-        
-        $lines = $this->storage_disk->readFileArray($router_path); 
-        $last = sizeof($lines) - 1; 
-        unset($lines[$last]);   //<-- removing the 2 last lines
-        unset($lines[$last-1]); //<--
-
-        $this->storage_disk->writeFileArray($router_path, $lines); 
-        
-        $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/Crud/route.js.stub');
-
-        $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-        $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-        $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-        
-        $this->storage_disk->writeFile($router_path, $stub, [
-            'append_file' => true,
-        ]);
-
-
-        //
-        //update store pages
-        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
-        
-        $lines = $this->storage_disk->readFileArray($store_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/store/pages/{{vst_entity}}_list_delete.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/store/pages/{{vst_entity}}_create.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/store/pages/{{vst_entity}}_update.js").default;');
-        
-        $this->storage_disk->writeFileArray($store_pages_path, $lines);
-
-        //
-        //update store
-        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.js';
-        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
-
-        $lines = $this->storage_disk->readFileArray($store_pages_path);
-
-        $browser_local_storage_key = 'alkaslkalkas';
-
-        $store_pages = [
-            'browser_local_storage_key' => $browser_local_storage_key,
-            'page_modules' => []
-        ];
-        foreach ($lines as $line) {
-            if (preg_match('/exports\.(.*?) = require/', $line, $match) == 1) {
-                if ($match[1] == 'index') {
-                    continue;
-                }
-                $store_pages['page_modules'] []= [
-                    'module_name' => $match[1],
-                ];
-            }
-        }
-
-        $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/store.js.stub');
-
-        $stub = $this->mustache->render($stub, $store_pages);
-        
-        $this->storage_disk->writeFile($store_path, $stub);
-
-        
     }
 
+    /**
+     * generates list delete page with accompanied data structures
+     *
+     * @param string $resources_relative_path_name
+     * @param string $MIX_BASE_RELATIVE_URL
+     * @param string $name
+     * @param array $model_schema
+     * @return void
+     */
     public function listDelete(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
     {
         $page_component_name = $name.'_list_delete';
@@ -269,6 +199,15 @@ class Page
         }
     }
 
+    /**
+     * generates create page with accompanied data structures
+     *
+     * @param string $resources_relative_path_name
+     * @param string $MIX_BASE_RELATIVE_URL
+     * @param string $name
+     * @param array $model_schema
+     * @return void
+     */
     public function create(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
     {
         $page_component_name = $name.'_create';
@@ -384,6 +323,15 @@ class Page
         }
     }
 
+    /**
+     * generates update page with accompanied data structures
+     *
+     * @param string $resources_relative_path_name
+     * @param string $MIX_BASE_RELATIVE_URL
+     * @param string $name
+     * @param array $model_schema
+     * @return void
+     */
     public function update(string $resources_relative_path_name, string $MIX_BASE_RELATIVE_URL, string $name, array $model_schema): void
     {
         $page_component_name = $name.'_update';
@@ -501,46 +449,6 @@ class Page
             $this->storage_disk->writeFile($update_store_path, $stub);
         }
 
-
-        //--------------------------------------------------------------------------------------
-
-
-        // $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
-        // $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
-        
-        // if (!$this->storage_disk->fileExists($update_path)) {
-        //     $this->storage_disk->makeDirectory($update_path);
-
-        //     $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/pages/form_update.vue.stub');
-
-        //     $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-        //     $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-        //     $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-        //     $stub = $this->mustache->render($stub, [
-        //         'ajax_get_get' => $model_schema['ajax']['get']['GET'],
-        //         'ajax_update_post' => $model_schema['ajax']['update']['POST'],
-        //         'form_elements' => $model_schema['presentation']['schema'],
-        //         'form_data_parameters' => $model_schema['presentation']['schema'],
-        //         'validation_rules' => $model_schema['presentation']['schema'],
-        //     ]);
-            
-        //     $this->storage_disk->writeFile($update_path, $stub);
-        // }
-
-        // if (!$this->storage_disk->fileExists($update_store_path)) {
-        //     $this->storage_disk->makeDirectory($update_store_path);
-
-        //     $stub = $this->storage_disk->readFile(__DIR__.'/../Stubs/resources/js/stores/pages/FormPage.js.stub');
-
-        //     $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-        //     $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-        //     $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-        //     $stub = $this->mustache->render($stub, [
-        //         'form_data_parameters' => $model_schema['presentation']['schema'],
-        //     ]);
-            
-        //     $this->storage_disk->writeFile($update_store_path, $stub);
-        // }
     }
 
     /**
