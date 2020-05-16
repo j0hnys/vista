@@ -1,0 +1,55 @@
+{
+    "ajax": {
+        "get": {
+            "GET": "\/trident\/resource\/demo_process"
+        },
+        "create": {
+            "POST": "\/trident\/resource\/demo_process"
+        },
+        "update": {
+            "POST": "\/trident\/resource\/demo_process"
+        },
+        "delete": {
+            "DELETE": "\/trident\/resource\/demo_process"
+        }
+    },
+    "presentation": {
+        "type": "form",
+        "schema": [
+            {
+                "column_name": "name",
+                "column_type": "string",
+                "type": "fillable",
+                "validation_rules": {
+                    "required": true,
+                    "type": "string",
+                    "trigger": "blur"
+                },
+                "attributes": {
+                    "type": {
+                        "string": true
+                    },
+                    "default_value": "''",
+                    "element_type": false
+                }
+            },
+            {
+                "column_name": "value",
+                "column_type": "string",
+                "type": "fillable",
+                "validation_rules": {
+                    "required": true,
+                    "type": "string",
+                    "trigger": "blur"
+                },
+                "attributes": {
+                    "type": {
+                        "string": true
+                    },
+                    "default_value": "''",
+                    "element_type": false
+                }
+            }
+        ]
+    }
+}
