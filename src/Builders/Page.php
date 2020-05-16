@@ -72,8 +72,8 @@ class Page
         $this->create($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
         
 
-        // //
-        // //update generation
+        //
+        //update generation
         $this->update($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
         
         
@@ -393,6 +393,7 @@ class Page
         $page_component_namespace = 'modules/presentation/components/'.$name.'_update';
         $mixin_namespace = 'modules/presentation/mixins/'.$name.'_update';
         $model_type_namespace = 'modules/presentation/models/Types/'.$name.'_update';
+        $store_page_namespace = 'pages/'.$name.'_update';
         $model_type = [
             [
                 'property_name' => 'variable1',
@@ -419,6 +420,7 @@ class Page
                 'page_name' => $page_name,
                 'page_api_server_namespace' => $page_api_server_namespace,
                 'page_component_name' => $page_component_name,
+                'store_page_namespace' => $store_page_namespace,
             ]);
             
             $this->storage_disk->writeFile($update_path, $stub);

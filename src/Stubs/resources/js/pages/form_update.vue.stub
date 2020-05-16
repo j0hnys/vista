@@ -10,7 +10,7 @@
                 </h1>
 
 
-                <{{page_component_name}} :form_data="data" @on-form-submitted-successfully="onSubmit"></{{page_component_name}}>
+                <{{page_component_name}} :form_data="form_data" @on-form-submitted-successfully="onSubmit"></{{page_component_name}}>
 
 
             </Col>
@@ -32,16 +32,23 @@
                 data: {},
             };
         },
+        computed: {
+            form_data() {
+                return this.$store.getters['{{store_page_namespace}}/formValidate'].data;
+            }
+        },
         methods: {
             onSubmit(form_data) {
                 let id = this.$route.params.id;
-                this.ajax().update(id, form_data, this);
+                this.ajax().update(id, form_data, this).then(() => {
+                    this.$store.dispatch('{{store_page_namespace}}/setFormValidate', form_data);
+                });
             },
         },
         mounted() {
-
-            this.ajax().get(this.$route.params.id, this);
-
+            this.ajax().get(this.$route.params.id, this).then(({data}) => {
+                this.$store.dispatch('{{store_page_namespace}}/setFormValidate', data);
+            });
         },
     }
 </script>

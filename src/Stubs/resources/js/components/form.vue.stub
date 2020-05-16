@@ -118,6 +118,11 @@
 
             };
         },
+        watch: {
+            form_data(value) {
+                this.formValidate = value;
+            }
+        },
         methods: {
             handleUpload (file) {
                 this.formValidate.file = file;
@@ -135,9 +140,7 @@
             },
         },
         mounted() {
-            if (Object.keys(this.form_data).length === 0 && this.form_data.constructor === Object) {
-                this.formValidate = this.form_data;
-            }
+            //
         },
     }
 </script>
