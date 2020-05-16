@@ -41,9 +41,6 @@
             onCreateButtonClicked() {
                 this.$router.push({ name: '{{vst_entity}}_create' });
             },
-            onRowDeleteClicked(id) {
-                this.ajax().delete(id);
-            },
             onRowEditClicked(id) {
                 this.$router.push({ name: '{{vst_entity}}_update', params: { id: id } });
             },
@@ -52,9 +49,7 @@
             }
         },
         mounted() {
-
             this.ajax().get('', this);
-
         },
     }
 </script>

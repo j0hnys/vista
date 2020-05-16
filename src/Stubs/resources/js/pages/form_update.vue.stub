@@ -9,9 +9,7 @@
                     test update
                 </h1>
 
-
                 <{{page_component_name}} :form_data="form_data" @on-form-submitted-successfully="onSubmit"></{{page_component_name}}>
-
 
             </Col>
         </Row>

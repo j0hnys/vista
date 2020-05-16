@@ -19,8 +19,6 @@
                 //
             };
 
-            //
-            //component local registration
             return {
                 ...local,
                 table_columns: [
