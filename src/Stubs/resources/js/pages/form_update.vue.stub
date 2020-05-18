@@ -38,13 +38,13 @@
         methods: {
             onSubmit(form_data) {
                 let id = this.$route.params.id;
-                this.ajax().update(id, form_data, this).then(() => {
+                this.ajax.update(id, form_data, this).then(() => {
                     this.$store.dispatch('{{store_page_namespace}}/setFormValidate', form_data);
                 });
             },
         },
         mounted() {
-            this.ajax().get(this.$route.params.id, this).then(({data}) => {
+            this.ajax.get(this.$route.params.id, this).then(({data}) => {
                 this.$store.dispatch('{{store_page_namespace}}/setFormValidate', data);
             });
         },

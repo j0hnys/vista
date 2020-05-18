@@ -45,11 +45,11 @@
                 this.$router.push({ name: '{{vst_entity}}_update', params: { id: id } });
             },
             onRowDeleteClicked(id) {
-                this.ajax().delete(id);
+                this.ajax.delete(id);
             }
         },
         mounted() {
-            this.ajax().get('', this);
+            this.ajax.get('', this);
         },
     }
 </script>

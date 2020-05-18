@@ -32,7 +32,7 @@
         },
         methods: {
             onSubmit(form_data) {
-                this.ajax().create(form_data, this);
+                this.ajax.create(form_data, this);
             },
         },
         mounted() {

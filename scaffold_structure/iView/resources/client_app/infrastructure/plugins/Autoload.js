@@ -49,9 +49,7 @@ register_modules.install = function (Vue)
                         const element_ = return_methods[alias];
                         
                         aliased_methods_in_mixin[alias] = {
-                            [alias]() {
-                                return Object.assign(...Object.values(element_));
-                            },
+                            [alias]: Object.assign(...Object.values(element_)),
                         };
                     }
                 }
@@ -59,7 +57,7 @@ register_modules.install = function (Vue)
                 var final_aliased_methods_in_mixin = Object.assign(...Object.values(aliased_methods_in_mixin));
 
                 page.mixins.push({
-                    methods: final_aliased_methods_in_mixin
+                    data: () => { return final_aliased_methods_in_mixin; }
                 });
             }
         }
