@@ -31,8 +31,9 @@
             };
         },
         methods: {
-            onSubmit(form_data) {
-                this.ajax.create(form_data, this);
+            async onSubmit(form_data) {
+                await this.ajax.create(form_data);
+                this.$Message.success('Success!');
             },
         },
         mounted() {

@@ -46,10 +46,14 @@
             },
             onRowDeleteClicked(id) {
                 this.ajax.delete(id);
+            },
+            async onMounted() {
+                let data = this.ajax.get();
+                this.data = data;
             }
         },
         mounted() {
-            this.ajax.get('', this);
+            this.onMounted();
         },
     }
 </script>

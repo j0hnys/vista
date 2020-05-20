@@ -2,11 +2,9 @@ export default {
     namespace: '{{namespace}}',
     name: '{{name}}',
     methods: {
-        get(id = '', self) {
-            return window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_get_get}}'+id ).then(({ data }) => {
-                self.data = data;
-            }).catch(error => {
-                console.log(error);
+        get() {
+            return window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_get_get}}').then(({data}) => {
+                return data;
             });
         },
         delete(id) {
