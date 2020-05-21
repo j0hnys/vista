@@ -23,17 +23,13 @@ Vue.use(ViewUI);
 Vue.use(TypedComponentData);
 Vue.use(Autoload);
 
-
 //
-//tmp
 var util = {};
 util.title = function (title) {
     title = title ? title + ' - Home' : 'ViewUI project';
     window.document.title = title;
 };
 //
-//
-
 
 //
 //router
@@ -45,7 +41,7 @@ const RouterConfig = {
 };
 const router = new VueRouter(RouterConfig);
 
-//set intial states
+//set initial states
 router.beforeEach((to, from, next) => {
     ViewUI.LoadingBar.start();
     util.title(to.meta.title);
@@ -57,11 +53,9 @@ router.afterEach((to, from, next) => {
     window.scrollTo(0, 0);
 });
 
-
 //vvv global event bus
 Vue.prototype.$global_events = new Vue();
 //^^^
-
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

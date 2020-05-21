@@ -7,6 +7,10 @@ var register_modules = {};
 register_modules.install = function (Vue) 
 {
     Object.values(component_modules).forEach(component => {
+        if (typeof component.name === 'undefined') {
+            throw "component.name in \""+component.__file+"\" does not exist."
+        }
+        
         if(Vue.options.components[component.name]) {
             delete Vue.options.components[component.name]
         }
