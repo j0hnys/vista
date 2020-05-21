@@ -90,7 +90,7 @@
                 variable: '1',
             });
 
-            console.log(this.demo_mixin().getSimpleString());
+            console.log(this.demo_mixin.getSimpleString());
         },
     }
 </script>

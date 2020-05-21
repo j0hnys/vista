@@ -90,11 +90,11 @@ class Page
     {
         $page_component_name = $name.'_list_delete';
         $page_api_server_namespace = 'application/api/server/'.$name.'_list_delete';
-        $page_namespace = 'modules/presentation/page/'.$name.'_list_delete_page';
+        $page_namespace = 'presentation/page/'.$name.'_list_delete_page';
         $page_name = $name.'_list_delete_page';
-        $page_component_namespace = 'modules/presentation/components/'.$name.'_list_delete';
-        $mixin_namespace = 'modules/presentation/mixins/'.$name.'_list_delete';
-        $model_type_namespace = 'modules/presentation/models/Types/'.$name.'_list_delete';
+        $page_component_namespace = 'presentation/components/'.$name.'_list_delete';
+        $mixin_namespace = 'presentation/mixins/'.$name.'_list_delete';
+        $model_type_namespace = 'presentation/models/Types/'.$name.'_list_delete';
         $model_type = [
             [
                 'property_name' => 'variable1',
@@ -102,12 +102,12 @@ class Page
             ]
         ];
 
-        $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/pages/'.strtolower($name).'_list_delete.vue';
+        $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/pages/'.strtolower($name).'_list_delete.vue';
         $list_delete_api_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/api/server/'.strtolower($name).'_list_delete.js';
-        $list_delete_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/components/'.strtolower($name).'_list_delete.vue';
-        $list_delete_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/mixins/'.strtolower($name).'_list_delete.js';
-        $list_delete_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/models/Types/'.strtolower($name).'_list_delete.js';
-        $list_delete_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/store/pages/'.lcfirst($name).'_list_delete.js';
+        $list_delete_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/components/'.strtolower($name).'_list_delete.vue';
+        $list_delete_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/mixins/'.strtolower($name).'_list_delete.js';
+        $list_delete_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/models/Types/'.strtolower($name).'_list_delete.js';
+        $list_delete_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/stores/pages/'.lcfirst($name).'_list_delete.js';
         
         //page
         if (!$this->storage_disk->fileExists($list_delete_path)) {
@@ -212,11 +212,11 @@ class Page
     {
         $page_component_name = $name.'_create';
         $page_api_server_namespace = 'application/api/server/'.$name.'_create';
-        $page_namespace = 'modules/presentation/page/'.$name.'_create_page';
+        $page_namespace = 'presentation/page/'.$name.'_create_page';
         $page_name = $name.'_create_page';
-        $page_component_namespace = 'modules/presentation/components/'.$name.'_create';
-        $mixin_namespace = 'modules/presentation/mixins/'.$name.'_create';
-        $model_type_namespace = 'modules/presentation/models/Types/'.$name.'_create';
+        $page_component_namespace = 'presentation/components/'.$name.'_create';
+        $mixin_namespace = 'presentation/mixins/'.$name.'_create';
+        $model_type_namespace = 'presentation/models/Types/'.$name.'_create';
         $model_type = [
             [
                 'property_name' => 'variable1',
@@ -224,12 +224,12 @@ class Page
             ]
         ];
 
-        $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/pages/'.strtolower($name).'_create.vue';
+        $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/pages/'.strtolower($name).'_create.vue';
         $create_api_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/api/server/'.strtolower($name).'_create.js';
-        $create_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/components/'.strtolower($name).'_create.vue';
-        $create_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/mixins/'.strtolower($name).'_create.js';
-        $create_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/models/Types/'.strtolower($name).'_create.js';
-        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/store/pages/'.lcfirst($name).'_create.js';
+        $create_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/components/'.strtolower($name).'_create.vue';
+        $create_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/mixins/'.strtolower($name).'_create.js';
+        $create_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/models/Types/'.strtolower($name).'_create.js';
+        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/stores/pages/'.lcfirst($name).'_create.js';
         
         //page
         if (!$this->storage_disk->fileExists($create_path)) {
@@ -336,11 +336,11 @@ class Page
     {
         $page_component_name = $name.'_update';
         $page_api_server_namespace = 'application/api/server/'.$name.'_update';
-        $page_namespace = 'modules/presentation/page/'.$name.'_update_page';
+        $page_namespace = 'presentation/page/'.$name.'_update_page';
         $page_name = $name.'_update_page';
-        $page_component_namespace = 'modules/presentation/components/'.$name.'_update';
-        $mixin_namespace = 'modules/presentation/mixins/'.$name.'_update';
-        $model_type_namespace = 'modules/presentation/models/Types/'.$name.'_update';
+        $page_component_namespace = 'presentation/components/'.$name.'_update';
+        $mixin_namespace = 'presentation/mixins/'.$name.'_update';
+        $model_type_namespace = 'presentation/models/Types/'.$name.'_update';
         $store_page_namespace = 'pages/'.$name.'_update';
         $model_type = [
             [
@@ -349,12 +349,12 @@ class Page
             ]
         ];
 
-        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/pages/'.strtolower($name).'_update.vue';
+        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/pages/'.strtolower($name).'_update.vue';
         $update_api_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/api/server/'.strtolower($name).'_update.js';
-        $update_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/components/'.strtolower($name).'_update.vue';
-        $update_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/mixins/'.strtolower($name).'_update.js';
-        $update_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/models/Types/'.strtolower($name).'_update.js';
-        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/modules/presentation/store/pages/'.lcfirst($name).'_update.js';
+        $update_component_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/components/'.strtolower($name).'_update.vue';
+        $update_mixin_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/mixins/'.strtolower($name).'_update.js';
+        $update_model_type_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/models/Types/'.strtolower($name).'_update.js';
+        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/stores/pages/'.lcfirst($name).'_update.js';
         
         //page
         if (!$this->storage_disk->fileExists($update_path)) {

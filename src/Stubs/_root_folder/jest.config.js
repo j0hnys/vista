@@ -1,8 +1,8 @@
 // jest.config.js
 module.exports = {
-    testRegex: 'resources_backend/client_app/modules/presentation/tests/.*.spec.js$',
+    testRegex: 'resources_backend/client_app/presentation/tests/.*.spec.js$',
     moduleNameMapper: {
-      "^@/(.*)$": "<rootDir>/resources_backend/client_app/modules/presentation/$1"
+      "^@/(.*)$": "<rootDir>/resources_backend/client_app/presentation/$1"
     },
     moduleFileExtensions: ['js', 'json', 'vue'],
     transform: {
@@ -11,7 +11,7 @@ module.exports = {
     },
     snapshotSerializers: ['jest-serializer-vue'],
     collectCoverageFrom: [
-      'resources_backend/client_app/modules/presentation/**/*.{js,jsx,ts,tsx,vue}',
+      'resources_backend/client_app/presentation/**/*.{js,jsx,ts,tsx,vue}',
     ],
     collectCoverage: false,
     coverageReporters: ['html', 'lcov', 'text-summary'],

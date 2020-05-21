@@ -1,4 +1,4 @@
-const requireModule = require.context("../../modules/presentation/mixins", true, /\.js$/);
+const requireModule = require.context("../../presentation/mixins", true, /\.js$/);
 var mixin_modules = {};
 
 requireModule.keys().forEach(file_name => {

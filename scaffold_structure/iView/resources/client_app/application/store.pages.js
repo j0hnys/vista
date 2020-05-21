@@ -1,1 +1,1 @@
-exports.index = require("../modules/presentation/store/pages/Index.js").default;
+exports.index = require("../presentation/stores/pages/Index.js").default;

@@ -31,7 +31,7 @@ describe('{{vst_entity}}_list_delete_page', () => {
     });
 
     test('on-row-edit-clicked emitted', () => {
-        wrapper.findComponent({{vst_entity}}_list_delete).vm.$emit('on-row-edit-clicked', 1);;
+        wrapper.findComponent({{vst_entity}}_list_delete).vm.$emit('on-row-edit-clicked', 1);
         wrapper.vm.$nextTick(() => {
             expect($router.push).lastCalledWith({ name: '{{vst_entity}}_update', params: { id: 1 } });
         });

@@ -91,9 +91,9 @@ class CrudBuilder
         $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.pages.js';
         
         $lines = $this->storage_disk->readFileArray($route_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/pages/{{vst_entity}}_list_delete.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/pages/{{vst_entity}}_create.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/pages/{{vst_entity}}_update.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../presentation/pages/{{vst_entity}}_list_delete.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../presentation/pages/{{vst_entity}}_create.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../presentation/pages/{{vst_entity}}_update.vue").default;');
         
         $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
@@ -125,9 +125,9 @@ class CrudBuilder
         $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
         
         $lines = $this->storage_disk->readFileArray($store_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../modules/presentation/store/pages/{{vst_entity}}_list_delete.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../modules/presentation/store/pages/{{vst_entity}}_create.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../modules/presentation/store/pages/{{vst_entity}}_update.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../presentation/stores/pages/{{vst_entity}}_list_delete.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../presentation/stores/pages/{{vst_entity}}_create.js").default;');
+        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../presentation/stores/pages/{{vst_entity}}_update.js").default;');
         
         $this->storage_disk->writeFileArray($store_pages_path, $lines);
 

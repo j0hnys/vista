@@ -48,7 +48,7 @@
                 this.ajax.delete(id);
             },
             async onMounted() {
-                let data = this.ajax.get();
+                let data = await this.ajax.get();
                 this.data = data;
             }
         },

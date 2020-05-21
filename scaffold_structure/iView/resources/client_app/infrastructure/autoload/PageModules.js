@@ -1,6 +1,6 @@
 let component_modules = {};
 
-const pagesModule = require.context("../../modules/presentation/pages", true, /\.vue$/);
+const pagesModule = require.context("../../presentation/pages", true, /\.vue$/);
 
 pagesModule.keys().forEach(file_name => {
     const module_ = pagesModule(file_name).default;

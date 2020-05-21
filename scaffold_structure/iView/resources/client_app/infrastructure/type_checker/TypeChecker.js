@@ -1,7 +1,7 @@
 const modules = {};
 
 if (process.env.NODE_ENV == 'development') {
-    const requireModule = require.context("../../modules/presentation/models", true, /\.js$/); //extract js files inside modules folder
+    const requireModule = require.context("../../presentation/models", true, /\.js$/); //extract js files inside modules folder
     requireModule.keys().forEach(fileName => {
         var module_ = requireModule(fileName).default;
         modules[module_.namespace] = module_;

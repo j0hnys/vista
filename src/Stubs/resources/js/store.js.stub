@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import Index from '../modules/presentation/store/pages/Index.js';
-import BasicLayout from '../modules/presentation/store/components/BasicLayout.js';
+import Index from '../presentation/stores/pages/Index.js';
+import BasicLayout from '../presentation/stores/components/BasicLayout.js';
 var stores = require("./store.pages.js");
 
 Vue.use(Vuex);

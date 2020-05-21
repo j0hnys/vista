@@ -1,4 +1,4 @@
-const componentModule = require.context("../../modules/presentation/components", true, /\.vue$/);
+const componentModule = require.context("../../presentation/components", true, /\.vue$/);
 let component_modules = {};
 
 componentModule.keys().forEach(file_name => {

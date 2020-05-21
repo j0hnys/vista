@@ -4,7 +4,7 @@
 /storage/*.key
 /vendor
 /coverage
-/resources_backend/client_app/modules/presentation/tests/__snapshots__
+/resources_backend/client_app/presentation/tests/__snapshots__
 .env
 .env.backup
 .phpunit.result.cache

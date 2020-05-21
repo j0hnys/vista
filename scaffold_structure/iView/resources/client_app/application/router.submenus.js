@@ -1,1 +1,1 @@
-exports.demo_sub_menu = require("../modules/presentation/constants/navigation/sub_menus/demo_sub_menu.js").default;
+exports.demo_sub_menu = require("../presentation/constants/navigation/sub_menus/demo_sub_menu.js").default;

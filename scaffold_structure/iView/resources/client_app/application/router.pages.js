@@ -1,1 +1,1 @@
-exports.index = require("../modules/presentation/pages/index.vue").default;
+exports.index = require("../presentation/pages/index.vue").default;
