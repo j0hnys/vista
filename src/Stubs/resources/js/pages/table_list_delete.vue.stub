@@ -2,7 +2,7 @@
 
 </style>
 <template>
-    <div class="{{vst_entity}}_list_delete">
+    <div class="{{template_css_class}}">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
 
@@ -39,10 +39,10 @@
         },
         methods: {
             onCreateButtonClicked() {
-                this.$router.push({ name: '{{vst_entity}}_create' });
+                this.$router.push({ name: '{{create_page_uri}}' });
             },
             onRowEditClicked(id) {
-                this.$router.push({ name: '{{vst_entity}}_update', params: { id: id } });
+                this.$router.push({ name: '{{update_page_uri}}', params: { id: id } });
             },
             onRowDeleteClicked(id) {
                 this.ajax.delete(id);

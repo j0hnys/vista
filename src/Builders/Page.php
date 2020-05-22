@@ -4,11 +4,13 @@ namespace j0hnys\Vista\Builders;
 
 use Illuminate\Container\Container as App;
 use j0hnys\Vista\Base\Storage\Disk;
+use j0hnys\Vista\Base\Utilities\WordCaseConverter;
 
 class Page
 {
     private $mustache;
     private $storage_disk;
+    private $word_case_converter;
     
     public function __construct(Disk $storage_disk = null)
     {
@@ -18,6 +20,7 @@ class Page
             $this->storage_disk = $storage_disk;
         }
         $this->app = new App();
+        $this->word_case_converter = new WordCaseConverter();
     }
 
     
@@ -119,6 +122,9 @@ class Page
             $stub = $this->mustache->render($stub, [
                 'page_namespace' => $page_namespace,
                 'page_name' => $page_name,
+                'template_css_class' => $this->word_case_converter->camelCaseToSnakeCase($page_component_name),
+                'create_page_uri' => $this->word_case_converter->camelCaseToSnakeCase($name.'_create'),
+                'update_page_uri' => $this->word_case_converter->camelCaseToSnakeCase($name.'_update'),
                 'page_api_server_namespace' => $page_api_server_namespace,
                 'page_component_name' => $page_component_name,
             ]);
@@ -241,6 +247,7 @@ class Page
             $stub = $this->mustache->render($stub, [
                 'page_namespace' => $page_namespace,
                 'page_name' => $page_name,
+                'template_css_class' => $this->word_case_converter->camelCaseToSnakeCase($page_component_name),
                 'page_api_server_namespace' => $page_api_server_namespace,
                 'page_component_name' => $page_component_name,
             ]);
@@ -366,6 +373,7 @@ class Page
             $stub = $this->mustache->render($stub, [
                 'page_namespace' => $page_namespace,
                 'page_name' => $page_name,
+                'template_css_class' => $this->word_case_converter->camelCaseToSnakeCase($page_component_name),
                 'page_api_server_namespace' => $page_api_server_namespace,
                 'page_component_name' => $page_component_name,
                 'store_page_namespace' => $store_page_namespace,

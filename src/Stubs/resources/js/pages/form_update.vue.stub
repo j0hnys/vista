@@ -2,7 +2,7 @@
 
 </style>
 <template>
-    <div class="{{vst_entity}}_update">
+    <div class="{{template_css_class}}">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
                 <h1>
@@ -39,12 +39,12 @@
             async onSubmit(form_data) {
                 let id = this.$route.params.id;
                 await this.ajax.update(id, form_data);
-                this.$store.dispatch('pages/another_entity_update/setFormValidate', form_data);
+                this.$store.dispatch('{{store_page_namespace}}/setFormValidate', form_data);
                 this.$Message.success('Success!');
             },
             async onMounted() {
                 let data = await this.ajax.get(this.$route.params.id);
-                this.$store.dispatch('pages/another_entity_update/setFormValidate', data);
+                this.$store.dispatch('{{store_page_namespace}}/setFormValidate', data);
             }
         },
         mounted() {

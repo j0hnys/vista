@@ -1,7 +1,7 @@
     {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{list_delete_uri}}',
         title: 'otinanai',
-        name: '{{list_delete_component_name}}',
+        name: '{{list_delete_uri}}',
         component: routes.{{list_delete_component_name}},
         meta: {
             submenu: null,
@@ -10,7 +10,7 @@
     {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{create_uri}}',
         title: 'otinanai',
-        name: '{{create_component_name}}',
+        name: '{{create_uri}}',
         component: routes.{{create_component_name}},
         meta: {
             submenu: null,
@@ -19,7 +19,7 @@
     {
         path: process.env.{{MIX_BASE_RELATIVE_URL}}+'/{{update_uri}}/:id',
         title: 'otinanai',
-        name: '{{update_component_name}}',
+        name: '{{update_uri}}',
         component: routes.{{update_component_name}},
         meta: {
             submenu: null,

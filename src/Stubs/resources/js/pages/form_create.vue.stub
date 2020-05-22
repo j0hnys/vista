@@ -2,7 +2,7 @@
 
 </style>
 <template>
-    <div class="{{vst_entity}}_create">
+    <div class="{{template_css_class}}">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
                 <h1>
