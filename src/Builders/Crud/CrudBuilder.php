@@ -4,12 +4,14 @@ namespace j0hnys\Vista\Builders\Crud;
 
 use Illuminate\Container\Container as App;
 use j0hnys\Vista\Base\Storage\Disk;
+use j0hnys\Vista\Base\Utilities\WordCaseConverter;
 use j0hnys\Vista\Builders\Page;
 
 class CrudBuilder
 {
     private $mustache;
     private $storage_disk;
+    private $word_case_converter;
     private $page;
     
     public function __construct(Disk $storage_disk = null, Page $page = null)
@@ -24,6 +26,7 @@ class CrudBuilder
             $this->page = $page;
         }
         $this->app = new App();
+        $this->word_case_converter = new WordCaseConverter();
     }
 
     
@@ -69,7 +72,7 @@ class CrudBuilder
             $model_schema = $this->storage_disk->readFile($this->storage_disk->getBasePath().$model_schema_relative_fullpath);
             $model_schema = json_decode($model_schema,true);
         } else {
-            $model_schema = $this->page->defaultSchema( lcfirst($name) );
+            $model_schema = $this->page->defaultSchema( ($name) );
         }
 
 
@@ -91,9 +94,9 @@ class CrudBuilder
         $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.pages.js';
         
         $lines = $this->storage_disk->readFileArray($route_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../presentation/pages/{{vst_entity}}_list_delete.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../presentation/pages/{{vst_entity}}_create.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../presentation/pages/{{vst_entity}}_update.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}ListDelete = require("../presentation/pages/{{vst_entity}}ListDelete.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Create = require("../presentation/pages/{{vst_entity}}Create.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Update = require("../presentation/pages/{{vst_entity}}Update.vue").default;');
         
         $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
@@ -112,8 +115,12 @@ class CrudBuilder
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/Crud/route.js.stub');
 
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-        $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-        $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+        $stub = str_replace('{{list_delete_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_list'), $stub);
+        $stub = str_replace('{{list_delete_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_list_delete'), $stub);
+        $stub = str_replace('{{create_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_create'), $stub);
+        $stub = str_replace('{{create_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_create'), $stub);
+        $stub = str_replace('{{update_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_update'), $stub);
+        $stub = str_replace('{{update_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_update'), $stub);
         
         $this->storage_disk->writeFile($router_path, $stub, [
             'append_file' => true,
@@ -125,9 +132,9 @@ class CrudBuilder
         $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
         
         $lines = $this->storage_disk->readFileArray($store_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("../presentation/stores/pages/{{vst_entity}}_list_delete.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("../presentation/stores/pages/{{vst_entity}}_create.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("../presentation/stores/pages/{{vst_entity}}_update.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}ListDelete = require("../presentation/stores/pages/{{vst_entity}}ListDelete.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Create = require("../presentation/stores/pages/{{vst_entity}}Create.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Update = require("../presentation/stores/pages/{{vst_entity}}Update.js").default;');
         
         $this->storage_disk->writeFileArray($store_pages_path, $lines);
 
