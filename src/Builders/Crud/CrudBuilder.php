@@ -4,20 +4,29 @@ namespace j0hnys\Vista\Builders\Crud;
 
 use Illuminate\Container\Container as App;
 use j0hnys\Vista\Base\Storage\Disk;
+use j0hnys\Vista\Base\Utilities\WordCaseConverter;
+use j0hnys\Vista\Builders\Page;
 
 class CrudBuilder
 {
     private $mustache;
     private $storage_disk;
+    private $word_case_converter;
+    private $page;
     
-    public function __construct(Disk $storage_disk = null)
+    public function __construct(Disk $storage_disk = null, Page $page = null)
     {
         $this->mustache = new \Mustache_Engine;
         $this->storage_disk = new Disk();
         if (!empty($storage_disk)) {
             $this->storage_disk = $storage_disk;
         }
+        $this->page = new Page($this->storage_disk);
+        if (!empty($page)) {
+            $this->page = $page;
+        }
         $this->app = new App();
+        $this->word_case_converter = new WordCaseConverter();
     }
 
     
@@ -28,7 +37,7 @@ class CrudBuilder
      */
     public function generate(string $name = '', string $model_schema_relative_fullpath = '', string $resources_relative_path_name_ = '')
     {
-
+        $browser_local_storage_key = 'vista';
         $resources_relative_path_name = 'resources';
         if (!empty($resources_relative_path_name_)) {
             $resources_relative_path_name = $resources_relative_path_name_;
@@ -49,6 +58,10 @@ class CrudBuilder
                         throw new \Exception("no \"mix_base_relative_url_env_name\" found in spa", 1);
                     }
                 }
+
+                if (!empty($spa_configuration['browser_local_storage_key'])) {
+                    $browser_local_storage_key = $spa_configuration['browser_local_storage_key'];
+                }
             } else {
                 throw new \Exception("no \"resource_folder_name\" found in spa", 1);
             }
@@ -59,144 +72,38 @@ class CrudBuilder
             $model_schema = $this->storage_disk->readFile($this->storage_disk->getBasePath().$model_schema_relative_fullpath);
             $model_schema = json_decode($model_schema,true);
         } else {
-            $model_schema = $this->defaultSchema( lcfirst($name) );
+            $model_schema = $this->page->defaultSchema( ($name) );
         }
 
 
         //
         //list delete generation
-        $list_delete_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_list_delete.vue';
-        $list_delete_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_list_delete.js';
-        
-        if (!$this->storage_disk->fileExists($list_delete_path)) {
-            $this->storage_disk->makeDirectory($list_delete_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/table_list_delete.vue.stub');
-            
-            //MIX_BASE_RELATIVE_URL
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
-                'ajax_delete_delete' => $model_schema['ajax']['delete']['DELETE'],
-                'table_columns' => $model_schema['presentation']['schema'],
-            ]);
-
-            
-            $this->storage_disk->writeFile($list_delete_path, $stub);
-        }
-
-        if (!$this->storage_disk->fileExists($list_delete_store_path)) {
-            $this->storage_disk->makeDirectory($list_delete_store_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
-            
-            //MIX_BASE_RELATIVE_URL
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'form_data_parameters' => [],
-            ]);
-
-            
-            $this->storage_disk->writeFile($list_delete_store_path, $stub);
-        }
+        $this->page->listDelete($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
 
         //
         //create generation
-        $create_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_create.vue';
-        $create_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_create.js';
-        
-        if (!$this->storage_disk->fileExists($create_path)) {
-            $this->storage_disk->makeDirectory($create_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/form_create.vue.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'ajax_create_post' => $model_schema['ajax']['create']['POST'],
-                'form_elements' => $model_schema['presentation']['schema'],
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-                'validation_rules' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($create_path, $stub);
-        }
-
-        if (!$this->storage_disk->fileExists($create_store_path)) {
-            $this->storage_disk->makeDirectory($create_store_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($create_store_path, $stub);
-        }
+        $this->page->create($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
 
         //
         //update generation
-        $update_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/pages/'.strtolower($name).'_update.vue';
-        $update_store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store/pages/'.lcfirst($name).'_update.js';
-        
-        if (!$this->storage_disk->fileExists($update_path)) {
-            $this->storage_disk->makeDirectory($update_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/pages/form_update.vue.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'ajax_get_get' => $model_schema['ajax']['get']['GET'],
-                'ajax_update_post' => $model_schema['ajax']['update']['POST'],
-                'form_elements' => $model_schema['presentation']['schema'],
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-                'validation_rules' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($update_path, $stub);
-        }
-
-        if (!$this->storage_disk->fileExists($update_store_path)) {
-            $this->storage_disk->makeDirectory($update_store_path);
-
-            $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/stores/pages/FormPage.js.stub');
-
-            $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-            $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-            $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
-            $stub = $this->mustache->render($stub, [
-                'form_data_parameters' => $model_schema['presentation']['schema'],
-            ]);
-            
-            $this->storage_disk->writeFile($update_store_path, $stub);
-        }
+        $this->page->update($resources_relative_path_name, $MIX_BASE_RELATIVE_URL, $name, $model_schema);
         
 
         //
         //update routes
-        $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.pages.js';
+        $route_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.pages.js';
         
         $lines = $this->storage_disk->readFileArray($route_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./pages/{{vst_entity}}_list_delete.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./pages/{{vst_entity}}_create.vue").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./pages/{{vst_entity}}_update.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}ListDelete = require("../presentation/pages/{{vst_entity}}ListDelete.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Create = require("../presentation/pages/{{vst_entity}}Create.vue").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Update = require("../presentation/pages/{{vst_entity}}Update.vue").default;');
         
         $this->storage_disk->writeFileArray($route_pages_path, $lines); 
 
 
         //
         //update router
-        $router_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.js';
+        $router_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.js';
         
         $lines = $this->storage_disk->readFileArray($router_path); 
         $last = sizeof($lines) - 1; 
@@ -208,8 +115,12 @@ class CrudBuilder
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/Crud/route.js.stub');
 
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
-        $stub = str_replace('{{vst_entity}}', lcfirst($name), $stub);
-        $stub = str_replace('{{Vst_entity}}', ucfirst($name), $stub);
+        $stub = str_replace('{{list_delete_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_list'), $stub);
+        $stub = str_replace('{{list_delete_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_list_delete'), $stub);
+        $stub = str_replace('{{create_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_create'), $stub);
+        $stub = str_replace('{{create_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_create'), $stub);
+        $stub = str_replace('{{update_uri}}', $this->word_case_converter->camelCaseToSnakeCase($name.'_update'), $stub);
+        $stub = str_replace('{{update_component_name}}', $this->word_case_converter->snakeAndKebabCaseToPascalCase($name.'_update'), $stub);
         
         $this->storage_disk->writeFile($router_path, $stub, [
             'append_file' => true,
@@ -218,23 +129,24 @@ class CrudBuilder
 
         //
         //update store pages
-        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.pages.js';
+        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
         
         $lines = $this->storage_disk->readFileArray($store_pages_path); 
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_list_delete = require("./store/pages/{{vst_entity}}_list_delete.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_create = require("./store/pages/{{vst_entity}}_create.js").default;');
-        $lines []= str_replace('{{vst_entity}}', lcfirst($name), "\n".'exports.{{vst_entity}}_update = require("./store/pages/{{vst_entity}}_update.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}ListDelete = require("../presentation/stores/pages/{{vst_entity}}ListDelete.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Create = require("../presentation/stores/pages/{{vst_entity}}Create.js").default;');
+        $lines []= str_replace('{{vst_entity}}', ($name), "\n".'exports.{{vst_entity}}Update = require("../presentation/stores/pages/{{vst_entity}}Update.js").default;');
         
         $this->storage_disk->writeFileArray($store_pages_path, $lines);
 
         //
         //update store
-        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
-        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.pages.js';
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.js';
+        $store_pages_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.pages.js';
 
         $lines = $this->storage_disk->readFileArray($store_pages_path);
 
         $store_pages = [
+            'browser_local_storage_key' => $browser_local_storage_key,
             'page_modules' => []
         ];
         foreach ($lines as $line) {
@@ -254,245 +166,6 @@ class CrudBuilder
         
         $this->storage_disk->writeFile($store_path, $stub);
 
-            
-    }
-
-    /**
-     * return the names of all events from trigger folder. (assumes that the namespace conventions are applied)
-     *
-     * @return array
-     */
-    public function defaultSchema(string $vst_entity)
-    {
-        return [
-            'ajax' => [
-                'get' => [
-                    'GET' => '/trident/resource/'.$vst_entity
-                ],
-                'create' => [
-                    'POST' => '/trident/resource/'.$vst_entity
-                ],
-                'update' => [
-                    'POST' => '/trident/resource/'.$vst_entity
-                ],
-                'delete' => [
-                    'DELETE' => '/trident/resource/'.$vst_entity
-                ],
-            ],
-            'presentation' => [
-                'type' => 'form',
-                'schema' => [
-                    [
-                        "column_name" => "string_parameter",
-                        "column_type" => "string",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "string",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["string" => true],
-                            "default_value" => '\'\'',
-                            "element_type" => false,
-                        ]
-                    ],
-                    [
-                        "column_name" => "integer_parameter",
-                        "column_type" => "integer",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "number",
-                                "max" => 30,
-                                "min" => 0,
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["number" => true],
-                            "default_value" => '0',
-                            "element_type" => false,
-                        ]
-                    ],
-                    [
-                        "column_name" => "boolean_parameter",
-                        "column_type" => "boolean",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "boolean",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["switch" => true],
-                            "default_value" => 'true',
-                            "element_type" => false,
-                        ],
-                        "fields" => [
-                            [
-                                "name" => "open", 
-                                "text" => "on", 
-                                "value" => "on", 
-                            ],
-                            [
-                                "name" => "close", 
-                                "text" => "off", 
-                                "value" => "off", 
-                            ],
-                        ],
-                    ],
-                    [
-                        "column_name" => "date_parameter",
-                        "column_type" => "date",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "date",
-                                "from" => "2018-12-12 00:00:00",
-                                "to" => "2018-12-22 00:00:00",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["date" => true],
-                            "default_value" => '\'\'',
-                            "element_type" => 'datetime',
-                        ],
-                    ],
-                    [
-                        "column_name" => "text_parameter",
-                        "column_type" => "string",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "text",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["text" => true],
-                            "default_value" => '\'\'',
-                            "element_type" => 'textarea',
-                        ]
-                    ],
-                    [
-                        "column_name" => "range_parameter",
-                        "column_type" => "float",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "number",
-                                "max" => 30,
-                                "min" => 0,
-                                "trigger" => "blur",
-                            ],
-                        ],
-                        "attributes" => [
-                            "type" => ["slider" => true],
-                            "default_value" => '[5,15]',
-                            "element_type" => false,
-                            "precision" => 2,
-                        ]
-                    ],
-                    [
-                        "column_name" => "radio_parameter",
-                        "column_type" => "string",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "radio",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["radio" => true],
-                            "default_value" => '\'eat\'',
-                            "element_type" => false,
-                        ],
-                        "fields" => [
-                            [
-                                "name" => "eat", 
-                                "text" => "Eat", 
-                                "value" => "Eat", 
-                            ],
-                            [
-                                "name" => "sleep", 
-                                "text" => "Sleep", 
-                                "value" => "Sleep", 
-                            ],
-                            [
-                                "name" => "repeat",
-                                "text" => "Repeat",
-                                "value" => "Repeat",
-                            ],
-                        ],
-                    ],
-                    [
-                        "column_name" => "checkbox_parameter",
-                        "column_type" => "string",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "checkbox",
-                                "max" => 2,
-                                "min" => 1,
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["checkbox" => true],
-                            "default_value" => '[\'eat\']',
-                            "element_type" => false,
-                        ],
-                        "fields" => [
-                            [
-                                "name" => "eat", 
-                                "text" => "Eat", 
-                                "value" => "Eat", 
-                            ],
-                            [
-                                "name" => "sleep", 
-                                "text" => "Sleep", 
-                                "value" => "Sleep", 
-                            ],
-                            [
-                                "name" => "repeat",
-                                "text" => "Repeat",
-                                "value" => "Repeat",
-                            ],
-                        ],
-                    ],
-                    [
-                        "column_name" => "file_parameter",
-                        "column_type" => "string",
-                        "type" => "fillable",
-                        "validation_rules" => [
-                            [
-                                "required" => true,
-                                "type" => "file",
-                                "trigger" => "blur",
-                            ]
-                        ],
-                        "attributes" => [
-                            "type" => ["file" => true],
-                            "default_value" => 'null',
-                            "element_type" => false,
-                        ]
-                    ],
-                ]
-            ]
-        ];
     }
 
 

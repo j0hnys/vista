@@ -1,0 +1,48 @@
+import { mount } from '@vue/test-utils';
+import {{vst_entity}}_list_delete_page from '@/pages/{{vst_entity}}_list_delete.vue';
+import {{vst_entity}}_list_delete from '@/components/{{vst_entity}}_list_delete';
+
+const $router = {
+    push: jest.fn()
+};
+const ajax = {
+    get: jest.fn(),
+    delete: jest.fn(),
+};
+
+describe('{{vst_entity}}_list_delete_page', () => {
+    var wrapper = mount({{vst_entity}}_list_delete_page, {
+        mocks: {
+            ajax, $router
+        },
+        stubs: [
+            'Row'
+        ],
+        components: {
+            {{vst_entity}}_list_delete: {{vst_entity}}_list_delete,
+        }
+    });
+
+    test('create button clicked', () => {
+        wrapper.find('Button').trigger('click');
+        wrapper.vm.$nextTick(() => {
+            expect($router.push).lastCalledWith({ name: '{{vst_entity}}_create' });
+        });
+    });
+
+    test('on-row-edit-clicked emitted', () => {
+        wrapper.findComponent({{vst_entity}}_list_delete).vm.$emit('on-row-edit-clicked', 1);
+        wrapper.vm.$nextTick(() => {
+            expect($router.push).lastCalledWith({ name: '{{vst_entity}}_update', params: { id: 1 } });
+        });
+    });
+
+    test('on-row-delete-clicked emitted', () => {
+        wrapper.findComponent({{vst_entity}}_list_delete).vm.$emit('on-row-delete-clicked', 1);
+        wrapper.vm.$nextTick(() => {
+            expect(ajax.delete).lastCalledWith(1);
+        });
+    });
+
+
+});

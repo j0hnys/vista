@@ -1,0 +1,58 @@
+import { mount } from '@vue/test-utils';
+import flushPromises from 'flush-promises';
+import {{vst_entity}}_update_page from '@/pages/{{vst_entity}}_update.vue';
+import {{vst_entity}}_update from '@/components/{{vst_entity}}_update';
+
+const $route = {
+    params: {
+        id: 1
+    }
+};
+const $store = {
+    dispatch: jest.fn(),
+    getters: {
+        'pages/{{vst_entity}}_update/formValidate': {
+            data: {}
+        }
+    }
+};
+const ajax = {
+    get: jest.fn(),
+    update: jest.fn(),
+};
+const $Message = {
+    success: jest.fn(),
+};
+
+describe('{{vst_entity}}_update_page', () => {
+    var wrapper = mount({{vst_entity}}_update_page, {
+        mocks: {
+            ajax, $route, $store, $Message
+        },
+        stubs: [
+            'Row', 'FormItem', 'InputNumber'
+        ],
+        components: {
+            {{vst_entity}}_update: {{vst_entity}}_update,
+        }
+    });
+
+    test('onMounted', async (done) => {
+        expect(ajax.get).lastCalledWith($route.params.id);
+        await flushPromises().then((data) => {
+            expect($store.dispatch).lastCalledWith('pages/{{vst_entity}}_update/setFormValidate', data);
+            done();
+        });
+    });
+
+    test('on-form-submitted-successfully emitted', () => {
+        let form_data = {};
+        wrapper.findComponent({{vst_entity}}_update).vm.$emit('on-form-submitted-successfully', form_data);
+        wrapper.vm.$nextTick(() => {
+            expect(ajax.update).lastCalledWith($route.params.id, form_data);
+            expect($store.dispatch).lastCalledWith('pages/{{vst_entity}}_update/setFormValidate', form_data);
+            expect($Message.success).lastCalledWith('Success!');
+        });
+    });
+
+});

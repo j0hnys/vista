@@ -1,100 +1,15 @@
 <style scoped>
-    .index {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        text-align: center;
-    }
-        .index h1 {
-            height: 150px;
-        }
-            .index h1 img {
-                height: 100%;
-            }
-        .index h2 {
-            color: #666;
-            margin-bottom: 200px;
-        }
-            .index h2 p {
-                margin: 0 0 50px;
-            }
-    .ivu-row-flex {
-        height: 100%;
-    }
+
 </style>
 <template>
-    <div class="{{vst_entity}}_create">
+    <div class="{{template_css_class}}">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
                 <h1>
                     test
                 </h1>
 
-
-                <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="150">
-                    
-
-                    {{# form_elements }}
-                    <FormItem label="{{column_name}}" prop="{{column_name}}">
-                    {{# validation_rules }}
-                        {{# attributes }}
-                            {{# type }}
-                            {{# string }}
-                        <Input v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></Input>
-                            {{/ string }}
-                            {{# number }}
-                        <InputNumber v-model="formValidate.{{column_name}}" placeholder="Enter your {{column_name}}"></InputNumber>
-                            {{/ number }}
-                            {{# switch }}
-                        <i-switch v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <span slot="{{name}}">{{text}}</span>
-                            {{/ fields }}
-                        </i-switch>
-                            {{/ switch }}
-                            {{# date }}
-                        <DatePicker type="{{element_type}}" v-model="formValidate.{{column_name}}"></DatePicker>
-                            {{/ date }}
-                            {{# text }}
-                        <Input type="{{element_type}}" v-model="formValidate.{{column_name}}"></Input>
-                            {{/ text }}
-                            {{# slider }}
-                        <Slider v-model="formValidate.{{column_name}}" range></Slider>
-                            {{/ slider }}
-                            {{# radio }}
-                        <RadioGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Radio label="{{name}}">{{text}}</Radio>
-                            {{/ fields }}
-                        </RadioGroup>
-                            {{/ radio }}
-                            {{# checkbox }}
-                        <CheckboxGroup v-model="formValidate.{{column_name}}">
-                            {{# fields }}
-                            <Checkbox label="{{name}}">{{text}}</Checkbox>
-                            {{/ fields }}
-                        </CheckboxGroup>
-                            {{/ checkbox }}
-                            {{# file }}
-                        <Upload action="" :before-upload="handleUpload">
-                            <Button icon="ios-cloud-upload-outline">Upload files</Button>
-                        </Upload>
-                        <div v-if="formValidate.file !== null">Upload file: {{ formValidate.file.name }} </div>
-                            {{/ file }}
-                            {{/ type }}
-                        {{/ attributes }}
-                    {{/ validation_rules }}
-                    </FormItem>
-                    {{/ form_elements }}
-                    
-                    
-                    <FormItem>
-                        <Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
-                    </FormItem>
-                </Form>
-
+                <{{page_component_name}} :form_data="data" @on-form-submitted-successfully="onSubmit"></{{page_component_name}}>
 
             </Col>
         </Row>
@@ -102,120 +17,27 @@
 </template>
 <script>
     export default {
-        data() {
-            var state = {
-                formValidate: {
-                    {{# form_data_parameters }}
-                    {{# attributes }}
-                    {{column_name}}: {{default_value}},
-                    {{/ attributes }}
-                    {{/ form_data_parameters }}
-                },
-            };
-            if (this.$store.state.pages.{{vst_entity}}_create) 
+        namespace: '{{page_namespace}}',
+        name: '{{page_name}}',
+        use: [
             {
-                state = this.$store.state.pages.{{vst_entity}}_create;
+                alias: 'ajax',
+                namespace: '{{page_api_server_namespace}}',
             }
-
-            //
-            //component state registration
+        ],
+        data() {
             return {
-                ...state,
-                ruleValidate: {
-
-                    {{# validation_rules }}
-                    {{column_name}}: [
-                        { 
-                        {{# validation_rules }}
-                            {{# required }}
-                            required: true, 
-                            {{/ required }}
-                            {{# type }}
-                            type: '{{type}}', 
-                            {{/ type }}
-                            {{# max }}
-                            max: {{max}}, 
-                            {{/ max }}
-                            {{# min }}
-                            min: {{min}}, 
-                            {{/ min }}
-                            {{# trigger }}
-                            trigger: '{{trigger}}',
-                            {{/ trigger }}
-                            message: 'The {{column_name}} cannot be empty', 
-                        {{/ validation_rules }}
-                        }
-                    ],
-                    {{/ validation_rules }}
-
-                },
-
+                data: {},
             };
-        },
-        watch: {
-            formValidate: {
-                deep: true,
-                handler(value) 
-                {
-                    this.$store.commit('pages/{{vst_entity}}_create/setFormValidate', value);
-                }
-            }
         },
         methods: {
-            ajax() {
-                var self = this;
-                return {
-                    create(data) {
-
-                        var form_data = new FormData();
-                        
-                        for (const key in data) {
-                            if (data.hasOwnProperty(key)) {
-                                const element = data[key];
-                                
-                                if (key == 'file') {
-                                    form_data.append(key, data[key], data[key].name);
-                                } else {
-                                    form_data.append(key, data[key]);
-                                }
-                            }
-                        }
-
-                        window.axios.post( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_create_post}}',  form_data ).then((response) => {
-                            // Once AJAX resolves we can update the Crud with the new color
-                            self.$Message.success('Success!');
-                        }).catch(error => {
-                            console.log(error);
-                        });
-                    },
-                }
-            },
-            handleUpload (file) {
-                this.formValidate.file = file;
-                return false;
-            },
-            handleSubmit (name) {
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                        
-                        var formValidate = this.formValidate;
-
-                        this.ajax().create(formValidate);
-                        
-                    } else {
-                        this.$Message.error('Fail!');
-                    }
-                })
+            async onSubmit(form_data) {
+                await this.ajax.create(form_data);
+                this.$Message.success('Success!');
             },
         },
         mounted() {
-            // console.log('test form mounted');
-            // console.log({
-            //     // 'this.$store': this.$store,
-            //     // 'this.$store.state': this.$store.state,
-            //     // 'this.$store.state.Index': this.$store.state.Index,
-            //     'this.$route': this.$route,
-            // });
+            //
         },
     }
 </script>

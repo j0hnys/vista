@@ -1,0 +1,7 @@
+export default {
+    namespace: '{{mixin_namespace}}',
+    name: '{{mixin_name}}',
+    methods: {
+        //
+    }
+}

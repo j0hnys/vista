@@ -71,8 +71,8 @@ class GenerateCrudTest extends TestCase
     public function testGenerate()
     {
         $name = 'DemoProcess';
-        $schema_path = '';
-        $resources_relative_path_name = '';            
+        $schema_path = '/../Stubs/_Solution/Schemas/DemoProcess/Presentation/Form.json';
+        $resources_relative_path_name = 'resources';
 
         $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
 

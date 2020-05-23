@@ -1,43 +1,20 @@
 <style scoped>
-    .index {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        text-align: center;
-    }
-        .index h1 {
-            height: 150px;
-        }
-            .index h1 img {
-                height: 100%;
-            }
-        .index h2 {
-            color: #666;
-            margin-bottom: 200px;
-        }
-            .index h2 p {
-                margin: 0 0 50px;
-            }
-    .ivu-row-flex {
-        height: 100%;
-    }
+
 </style>
 <template>
-    <div class="{{vst_entity}}_list_delete">
+    <div class="{{template_css_class}}">
         <Row type="flex" justify="center" align="middle">
             <Col span="24">
 
                 <Row type="flex" justify="end" style="margin-bottom: 20px;">
                     <Col>
-                        <Button type="primary" @click="on_create_button_clicked">Create</Button>
+                        <Button type="primary" @click="onCreateButtonClicked">Create</Button>
                     </Col>
                 </Row>
 
                 <Row>
                     <Col>
-                        <Table border :columns="columns" :data="data"></Table>
+                        <{{page_component_name}} :table_data="data" @on-row-edit-clicked="onRowEditClicked" @on-row-delete-clicked="onRowDeleteClicked"></{{page_component_name}}>
                      </Col>
                 </Row>
 
@@ -47,123 +24,36 @@
 </template>
 <script>
     export default {
-        data() {
-            var state = {
-                formValidate: {
-                    {{# form_data_parameters }}
-                    {{# attributes }}
-                    {{column_name}}: {{default_value}},
-                    {{/ attributes }}
-                    {{/ form_data_parameters }}
-                },
-            };
-            if (this.$store.state.pages.{{vst_entity}}_list_delete) 
+        namespace: '{{page_namespace}}',
+        name: '{{page_name}}',
+        use: [
             {
-                state = this.$store.state.pages.{{vst_entity}}_list_delete;
+                alias: 'ajax',
+                namespace: '{{page_api_server_namespace}}',
             }
-
-
-            //
-            //component state registration
+        ],
+        data() {
             return {
-                ...state,
-                columns: [
-                    {{# table_columns }}
-                    {
-                        title: '{{column_name}}',
-                        key: '{{column_name}}',
-                        minWidth: 100,
-                    },
-                    {{/ table_columns }}
-                    {
-                        title: 'Action',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
-                        render: (h, params) => {
-                            var row = params.row;
-
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.$router.push({ name: '{{vst_entity}}_update', params: { id: row.id } });
-                                        }
-                                    }
-                                }, 'Edit'),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.ajax().delete(row.id);
-                                        }
-                                    }
-                                }, 'Delete')
-                            ]);
-                        }
-                    }
-                ],
                 data: []
-
-
             };
-        },
-        watch: {
-            formValidate: {
-                deep: true,
-                handler(value) 
-                {
-                    this.$store.commit('pages/{{vst_entity}}_list_delete/setFormValidate', value);
-                }
-            }
         },
         methods: {
-            ajax() {
-                var self = this;
-                return {
-                    get(id='') {
-                        window.axios.get( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_get_get}}'+id ).then(({ data }) => {
-                            // console.log(data);
-                            self.data = data;
-                        }).catch(error => {
-                            console.log(error);
-                        });
-                    },
-                    delete(id) {
-                        window.axios.delete( process.env.{{MIX_BASE_RELATIVE_URL}}+'{{ajax_delete_delete}}/'+id ).then(({ data }) => {
-                            // console.log(data);
-                            window.location.reload();
-                        }).catch(error => {
-                            console.log(error);
-                        });
-                    }
-                }
+            onCreateButtonClicked() {
+                this.$router.push({ name: '{{create_page_uri}}' });
             },
-            on_create_button_clicked() {
-                this.$router.push({ name: '{{vst_entity}}_create' });
+            onRowEditClicked(id) {
+                this.$router.push({ name: '{{update_page_uri}}', params: { id: id } });
             },
+            onRowDeleteClicked(id) {
+                this.ajax.delete(id);
+            },
+            async onMounted() {
+                let data = await this.ajax.get();
+                this.data = data;
+            }
         },
         mounted() {
-            // console.log('test list mounted');
-            // console.log({
-            //     // 'this.$store': this.$store,
-            //     // 'this.$store.state': this.$store.state,
-            //     // 'this.$store.state.Index': this.$store.state.Index,
-            //     'this.$route': this.$route,
-            // });
-
-            this.ajax().get();
-
+            this.onMounted();
         },
     }
 </script>

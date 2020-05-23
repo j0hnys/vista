@@ -48,12 +48,9 @@ class GenerateCrud extends Command
             $schema_path = $this->option('schema_path') ? $this->option('schema_path') : '';
             $resources_relative_path_name = $this->option('resources_relative_path_name') ? $this->option('resources_relative_path_name') : '';
             
-
-            $crud = $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
+            $this->crud_builder->generate($name, $schema_path, $resources_relative_path_name);
             
-
-            $this->info($name.' CRUD successfully created');
-            
+            $this->info($name.' CRUD successfully created');            
         } catch (\Exception $ex) {
             $this->error($ex->getMessage() . ' on line ' . $ex->getLine() . ' in ' . $ex->getFile());
         }

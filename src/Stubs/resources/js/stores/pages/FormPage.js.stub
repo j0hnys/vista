@@ -22,5 +22,14 @@ export default {
         {
             return state.formValidate;
         }
+    },
+    actions: {
+        setFormValidate ({ commit }, data) 
+        {
+            commit({
+                type: 'setFormValidate',
+                data: data
+            });
+        },
     }
 };

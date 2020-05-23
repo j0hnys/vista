@@ -29,6 +29,7 @@ class Install
         
         $app_path = $this->storage_disk->getBasePath().'/app';
         $laravel_root_folder_name = pathinfo( base_path() )['basename'];
+        $browser_local_storage_key = $laravel_root_folder_name;
 
         $resources_relative_path_name = 'resources';
         $public_relative_path_name = 'public';
@@ -49,6 +50,9 @@ class Install
         $MIX_BASE_RELATIVE_URL = 'MIX_BASE_RELATIVE_URL';
         $MIX_STORAGE_URL = 'MIX_STORAGE_URL';
         foreach ($configuration['spas'] as $spa_configuration) {
+            if (!empty($spa_configuration['browser_local_storage_key'])) {
+                $browser_local_storage_key = $spa_configuration['browser_local_storage_key'];
+            }
             if (!empty($spa_configuration['resource_folder_name'])) {
                 if ($spa_configuration['resource_folder_name'] == $resources_relative_path_name) {
 
@@ -84,15 +88,13 @@ class Install
 
         //
         //folder structure creation
-        if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/app.js')) {
+        if (!$this->storage_disk->fileExists($this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/infrastructure/app.js')) {
             
             //resources folder 
             $source = __DIR__.'/../../../scaffold_structure/iView/resources';
             $destination = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/.';
 
-            
-            $this->storage_disk->makeDirectory($destination);
-            
+            $this->storage_disk->makeDirectory($destination);            
             $this->storage_disk->copyFoldersAndFiles($source, $destination);
             
             //public folder
@@ -109,7 +111,7 @@ class Install
 
         //
         //write router.js
-        $router_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/router.js';
+        $router_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/router.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/router.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -119,7 +121,7 @@ class Install
 
         //
         //write main_menu.js
-        $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/main_menu/main_menu.js';
+        $main_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/constants/navigation/main_menu/main_menu.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/main_menu/main_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -129,7 +131,7 @@ class Install
 
         //
         //write demo_sub_menu.js
-        $demo_sub_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/navigation/sub_menus/demo_sub_menu.js';
+        $demo_sub_menu_full_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/presentation/constants/navigation/sub_menus/demo_sub_menu.js';
         
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/navigation/sub_menus/demo_sub_menu.js.stub');
         $stub = str_replace('{{MIX_BASE_RELATIVE_URL}}', $MIX_BASE_RELATIVE_URL, $stub);
@@ -223,12 +225,13 @@ class Install
 
         //
         //update store
-        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/js/store.js';
+        $store_path = $this->storage_disk->getBasePath().'/'.$resources_relative_path_name.'/client_app/application/store.js';
 
         $stub = $this->storage_disk->readFile(__DIR__.'/../../Stubs/resources/js/store.js.stub');
 
         $stub = $this->mustache->render($stub, [
             'page_modules' => [],
+            'browser_local_storage_key' => $browser_local_storage_key
         ]);
         
         $this->storage_disk->writeFile($store_path, $stub);

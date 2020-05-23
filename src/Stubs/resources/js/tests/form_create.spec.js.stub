@@ -1,0 +1,34 @@
+import { mount } from '@vue/test-utils';
+import {{vst_entity}}_create_page from '@/pages/{{vst_entity}}_create.vue';
+import {{vst_entity}}_create from '@/components/{{vst_entity}}_create';
+
+const ajax = {
+    create: jest.fn(),
+};
+const $Message = {
+    success: jest.fn(),
+};
+
+describe('{{vst_entity}}_create_page', () => {
+    var wrapper = mount({{vst_entity}}_create_page, {
+        mocks: {
+            ajax, $Message
+        },
+        stubs: [
+            'Row', 'FormItem', 'InputNumber'
+        ],
+        components: {
+            {{vst_entity}}_create: {{vst_entity}}_create,
+        }
+    });
+
+    test('on-form-submitted-successfully emitted', () => {
+        let form_data = {};
+        wrapper.findComponent({{vst_entity}}_create).vm.$emit('on-form-submitted-successfully', form_data);
+        wrapper.vm.$nextTick(() => {
+            expect(ajax.create).lastCalledWith(form_data);
+            expect($Message.success).lastCalledWith('Success!');
+        });
+    });
+
+});
