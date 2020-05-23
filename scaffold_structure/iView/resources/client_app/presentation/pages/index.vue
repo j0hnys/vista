@@ -77,12 +77,12 @@
                     content: 'Now, enjoy the convenience of iView.'
                 });
 
-                this.$global_events.$emit('pages/Index/test','emited string');
+                this.$globalEvents.$emit('pages/Index/test','emited string');
 
             }
         },
         mounted() {
-            this.$global_events.$on('pages/Index/test',(data) => {
+            this.$globalEvents.$on('pages/Index/test',(data) => {
                 console.log('pages/Index/test global event fired with data: "'+data+'"');    
             });
 

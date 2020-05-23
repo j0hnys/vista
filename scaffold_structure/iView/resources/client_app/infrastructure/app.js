@@ -54,7 +54,7 @@ router.afterEach((to, from, next) => {
 });
 
 //vvv global event bus
-Vue.prototype.$global_events = new Vue();
+Vue.prototype.$globalEvents = new Vue();
 //^^^
 
 /**
